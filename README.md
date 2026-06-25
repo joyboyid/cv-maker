@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CV Satu Halaman
 
-## Getting Started
+**Gratis · Open Source · Tanpa daftar**
 
-First, run the development server:
+Tool pembuatan CV dan resume satu halaman untuk pelamar kerja Indonesia. ATS-friendly, preview langsung, export PDF, data tersimpan lokal di browser.
+
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+
+## Fitur
+
+- 3 template: Modern, Minimal, Classic
+- Export PDF satu klik
+- Bahasa Indonesia & Inggris
+- Auto-save di `localStorage` (tanpa server)
+- Skor panjang konten untuk one-pager
+- **100% gratis** — tanpa paywall, tanpa watermark, tanpa langganan
+
+## Mulai cepat
 
 ```bash
+git clone https://github.com/YOUR_USERNAME/cv-satu-halaman.git
+cd cv-satu-halaman
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Konfigurasi (opsional)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Salin `.env.example` ke `.env.local` dan isi URL repo GitHub kamu:
 
-## Learn More
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+```env
+NEXT_PUBLIC_GITHUB_URL=https://github.com/username/cv-satu-halaman
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploy gratis ke [Vercel](https://vercel.com), [Netlify](https://netlify.com), atau hosting static/Node.js lainnya:
 
-## Deploy on Vercel
+```bash
+npm run build
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Open Source
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyek ini dilisensikan di bawah **MIT License** — kamu bebas:
+
+- Memakai untuk keperluan pribadi atau komersial
+- Memodifikasi dan mendistribusikan ulang
+- Menghosting versi sendiri
+
+Lihat [LICENSE](./LICENSE) untuk detail lengkap.
+
+Ingin berkontribusi? Baca [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Tech stack
+
+- [Next.js](https://nextjs.org/) (App Router)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [jsPDF](https://github.com/parallax/jsPDF) + [html2canvas](https://html2canvas.hertzen.com/) untuk export PDF
+
+## Privasi
+
+Data CV **tidak dikirim ke server**. Semua penyimpanan terjadi di browser pengguna.
+
+---
+
+Dibuat untuk pelamar kerja Indonesia. Kontribusi dipersilakan.

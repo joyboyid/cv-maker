@@ -1,0 +1,184 @@
+/* Hex/rgb only — kompatibel dengan html2canvas (tanpa oklch) */
+
+.resume-doc {
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.4;
+}
+
+.resume-doc *,
+.resume-doc *::before,
+.resume-doc *::after {
+  box-sizing: border-box;
+}
+
+.resume-doc-inner {
+  transform-origin: top left;
+}
+
+.resume-title {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.resume-title-lg {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.resume-subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.resume-contact {
+  font-size: 10px;
+  color: #475569;
+}
+
+.resume-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1e293b;
+}
+
+.resume-body {
+  font-size: 10px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.resume-body-sm {
+  font-size: 11px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.resume-muted {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.resume-bold {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.resume-list {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  font-size: 10px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.resume-list li + li {
+  margin-top: 2px;
+}
+
+.resume-divider {
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.resume-layout-modern {
+  display: flex;
+  min-height: 100%;
+}
+
+.resume-sidebar {
+  width: 32%;
+  flex-shrink: 0;
+  padding: 24px;
+  color: #ffffff;
+}
+
+.resume-sidebar h2 {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.resume-sidebar .resume-title {
+  color: #ffffff;
+}
+
+.resume-sidebar .resume-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.resume-sidebar-contact {
+  margin-top: 20px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.resume-sidebar-contact p + p {
+  margin-top: 6px;
+}
+
+.resume-skill-pill {
+  margin-top: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 10px;
+}
+
+.resume-main {
+  flex: 1;
+  padding: 24px;
+  min-width: 0;
+}
+
+.resume-stack > * + * {
+  margin-top: 16px;
+}
+
+.resume-stack-sm > * + * {
+  margin-top: 10px;
+}
+
+.resume-classic-header {
+  text-align: center;
+}
+
+.resume-classic-header .resume-contact {
+  margin-top: 8px;
+}
+
+.resume-classic-rule {
+  width: 96px;
+  height: 1px;
+  margin: 14px auto 0;
+}
+
+.resume-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.resume-pad {
+  padding: 32px;
+}
+
+.resume-center-title {
+  text-align: center;
+}
+
+.resume-italic {
+  font-style: italic;
+}
