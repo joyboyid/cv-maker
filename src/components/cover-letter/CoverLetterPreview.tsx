@@ -1,0 +1,145 @@
+"use client";
+
+import {
+  forwardRef,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { CoverLetterDocument } from "@/components/cover-letter/CoverLetterDocument";
+import {
+  computeDynamicPageLayout,
+  getPaperDimensions,
+  type DynamicPageLayout,
+} from "@/lib/resume-layout";
+import { mergeCoverLetterData } from "@/lib/sanitize-cover-letter";
+import type { CoverLetterData, CoverLetterSettings } from "@/types/cover-letter";
+import "@/styles/cover-letter-document.css";
+
+interface CoverLetterPreviewProps {
+  data: CoverLetterData;
+  settings: CoverLetterSettings;
+  onPageLayoutChange?: (layout: DynamicPageLayout) => void;
+}
+
+export const CoverLetterPreview = forwardRef<HTMLDivElement, CoverLetterPreviewProps>(
+  function CoverLetterPreview({ data, settings, onPageLayoutChange }, ref) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const measureRef = useRef<HTMLDivElement>(null);
+    const [displayScale, setDisplayScale] = useState(1);
+    const [pageLayout, setPageLayout] = useState<DynamicPageLayout>(() =>
+      computeDynamicPageLayout(0, settings.paperSize),
+    );
+
+    const paper = useMemo(
+      () => getPaperDimensions(settings.paperSize),
+      [settings.paperSize],
+    );
+
+    const cleanData = useMemo(() => mergeCoverLetterData(data), [data]);
+    const measureKey = useMemo(
+      () => JSON.stringify({ data: cleanData, paperSize: settings.paperSize }),
+      [cleanData, settings.paperSize],
+    );
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const updateDisplayScale = () => {
+        const width = container.clientWidth;
+        setDisplayScale(width > 0 ? width / paper.widthPx : 1);
+      };
+
+      updateDisplayScale();
+      const observer = new ResizeObserver(updateDisplayScale);
+      observer.observe(container);
+      return () => observer.disconnect();
+    }, [paper.widthPx]);
+
+    useLayoutEffect(() => {
+      const measure = measureRef.current;
+      if (!measure) return;
+
+      const updateLayout = () => {
+        const naturalHeight = measure.scrollHeight;
+        const layout = computeDynamicPageLayout(naturalHeight, settings.paperSize);
+        setPageLayout(layout);
+        onPageLayoutChange?.(layout);
+      };
+
+      updateLayout();
+      const observer = new ResizeObserver(updateLayout);
+      observer.observe(measure);
+      return () => observer.disconnect();
+    }, [measureKey, settings.paperSize, onPageLayoutChange]);
+
+    const scaledWrapperHeight = pageLayout.heightPx * displayScale;
+
+    return (
+      <div
+        className="mx-auto w-full"
+        style={{ maxWidth: `${pageLayout.widthMm}mm` }}
+      >
+        <div
+          ref={containerRef}
+          className="relative w-full overflow-hidden rounded-sm bg-white shadow-xl shadow-slate-200/80"
+          style={{ height: scaledWrapperHeight }}
+        >
+          <div
+            className="absolute top-0 left-0"
+            style={{
+              width: pageLayout.widthPx,
+              height: pageLayout.heightPx,
+              transform: `scale(${displayScale})`,
+              transformOrigin: "top left",
+            }}
+          >
+            <div
+              ref={ref}
+              id="cover-letter-preview"
+              className="cover-letter-doc"
+              style={{
+                width: pageLayout.widthPx,
+                height: pageLayout.heightPx,
+                padding: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: pageLayout.widthPx,
+                  transform:
+                    pageLayout.contentScale < 1
+                      ? `scale(${pageLayout.contentScale})`
+                      : undefined,
+                  transformOrigin: "top left",
+                }}
+              >
+                <CoverLetterDocument
+                  data={cleanData}
+                  language={settings.language}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          ref={measureRef}
+          aria-hidden
+          style={{
+            position: "fixed",
+            top: 0,
+            left: -10000,
+            width: paper.widthPx,
+            visibility: "hidden",
+            pointerEvents: "none",
+          }}
+        >
+          <CoverLetterDocument data={cleanData} language={settings.language} />
+        </div>
+      </div>
+    );
+  },
+);

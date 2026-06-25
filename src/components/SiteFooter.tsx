@@ -23,6 +23,12 @@ export function SiteFooter() {
             Buat Portofolio
           </Link>
           <Link
+            href="/cover-letter/builder"
+            className="text-sm text-blue-600 transition hover:text-blue-700"
+          >
+            Cover Letter
+          </Link>
+          <Link
             href="/about"
             className="text-sm text-blue-600 transition hover:text-blue-700"
           >

@@ -6,54 +6,59 @@ import {
   ArrowLeft,
   Check,
   Download,
-  FileText,
+  FileSignature,
   Link2,
   RotateCcw,
   Sparkles,
+  Wand2,
 } from "lucide-react";
-import { AtsScorePanel } from "@/components/AtsScorePanel";
+import { CoverLetterForm } from "@/components/cover-letter/CoverLetterForm";
+import { CoverLetterPreview } from "@/components/cover-letter/CoverLetterPreview";
 import { LinkedInPrefillPanel } from "@/components/LinkedInPrefillPanel";
-import { ResumeForm } from "@/components/ResumeForm";
-import { ResumePreview } from "@/components/ResumePreview";
 import { SiteFooter } from "@/components/SiteFooter";
-import { calculateAtsScore } from "@/lib/ats-score";
 import {
-  buildPdfFilename,
+  buildPdfCoverLetterFilename,
+  defaultCoverLetterState,
+  generateCoverLetterFromCv,
+  sampleCoverLetterData,
+} from "@/lib/cover-letter-defaults";
+import { ct } from "@/lib/cover-letter-i18n";
+import {
+  clearCoverLetterState,
+  loadCoverLetterState,
+  saveCoverLetterState,
+} from "@/lib/cover-letter-storage";
+import { exportElementToPdf, PdfExportError } from "@/lib/pdf-export";
+
+import {
   getPaperDimensions,
   type DynamicPageLayout,
 } from "@/lib/resume-layout";
-import {
-  defaultResumeState,
-  sampleResumeData,
-} from "@/lib/resume-defaults";
-import { exportElementToPdf, PdfExportError } from "@/lib/pdf-export";
-import { buildShareUrl } from "@/lib/share-resume";
-import { t } from "@/lib/i18n";
-import {
-  clearResumeState,
-  loadResumeState,
-  saveResumeState,
-} from "@/lib/storage";
+import { buildCoverLetterShareUrl } from "@/lib/share-cover-letter";
+import { loadResumeState } from "@/lib/storage";
+import { defaultResumeData } from "@/lib/resume-defaults";
 
-export default function BuilderPage() {
-  const [data, setData] = useState(defaultResumeState.data);
-  const [settings, setSettings] = useState(defaultResumeState.settings);
+
+export default function CoverLetterBuilderPage() {
+  const [data, setData] = useState(defaultCoverLetterState.data);
+  const [settings, setSettings] = useState(defaultCoverLetterState.settings);
+  const [hydrated, setHydrated] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const [pageLayout, setPageLayout] = useState<DynamicPageLayout | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
-      const saved = loadResumeState();
+      const saved = loadCoverLetterState();
       setData(saved.data);
       setSettings(saved.settings);
     } catch {
-      clearResumeState();
-      setData(defaultResumeState.data);
-      setSettings(defaultResumeState.settings);
+      clearCoverLetterState();
+      setData(defaultCoverLetterState.data);
+      setSettings(defaultCoverLetterState.settings);
     } finally {
       setHydrated(true);
     }
@@ -61,17 +66,12 @@ export default function BuilderPage() {
 
   useEffect(() => {
     if (!hydrated) return;
-    saveResumeState({ data, settings });
+    saveCoverLetterState({ data, settings });
   }, [data, settings, hydrated]);
 
   const paper = useMemo(
     () => getPaperDimensions(settings.paperSize),
     [settings.paperSize],
-  );
-
-  const atsResult = useMemo(
-    () => calculateAtsScore(data, settings.language, settings.paperSize),
-    [data, settings.language, settings.paperSize],
   );
 
   const handleExport = async () => {
@@ -86,7 +86,7 @@ export default function BuilderPage() {
     try {
       await exportElementToPdf(
         previewRef.current,
-        buildPdfFilename(data.personal.fullName),
+        buildPdfCoverLetterFilename(data.sender.fullName),
       );
     } catch (error) {
       const message =
@@ -100,26 +100,43 @@ export default function BuilderPage() {
   };
 
   const handleShare = async () => {
-    const url = buildShareUrl({ data, settings });
+    const url = buildCoverLetterShareUrl({ data, settings });
 
     try {
       await navigator.clipboard.writeText(url);
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2500);
     } catch {
-      window.prompt("Salin link CV ini:", url);
+      window.prompt("Salin link cover letter ini:", url);
     }
   };
 
   const handleReset = () => {
-    if (!confirm("Reset semua data CV?")) return;
-    clearResumeState();
-    setData(defaultResumeState.data);
-    setSettings(defaultResumeState.settings);
+    if (!confirm("Reset semua data cover letter?")) return;
+    clearCoverLetterState();
+    setData(defaultCoverLetterState.data);
+    setSettings(defaultCoverLetterState.settings);
+    setNotice(null);
   };
 
   const handleLoadSample = () => {
-    setData(sampleResumeData);
+    setData(sampleCoverLetterData);
+    setNotice(null);
+  };
+
+  const handleGenerateFromCv = () => {
+    try {
+      const resume = loadResumeState();
+      if (!resume.data.personal.fullName && resume.data.experiences.length === 0) {
+        setNotice("Data CV masih kosong. Isi CV dulu di builder.");
+        return;
+      }
+      setData(generateCoverLetterFromCv(resume.data, settings.language));
+      setNotice(ct(settings.language, "importSuccess"));
+      setTimeout(() => setNotice(null), 3000);
+    } catch {
+      setNotice("Gagal generate dari CV.");
+    }
   };
 
   if (!hydrated) {
@@ -144,8 +161,10 @@ export default function BuilderPage() {
             </Link>
             <div className="hidden h-4 w-px bg-slate-200 sm:block" />
             <div className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-blue-600" />
-              <span className="font-semibold text-slate-900">CV Satu Halaman</span>
+              <FileSignature className="h-5 w-5 text-emerald-600" />
+              <span className="font-semibold text-slate-900">
+                {ct(settings.language, "builder")}
+              </span>
             </div>
           </div>
 
@@ -156,7 +175,15 @@ export default function BuilderPage() {
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
             >
               <Sparkles className="h-4 w-4" />
-              {t(settings.language, "loadSample")}
+              {ct(settings.language, "loadSample")}
+            </button>
+            <button
+              type="button"
+              onClick={handleGenerateFromCv}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+            >
+              <Wand2 className="h-4 w-4" />
+              {ct(settings.language, "importFromCv")}
             </button>
             <button
               type="button"
@@ -169,8 +196,8 @@ export default function BuilderPage() {
                 <Link2 className="h-4 w-4" />
               )}
               {shareCopied
-                ? t(settings.language, "linkCopied")
-                : t(settings.language, "shareLink")}
+                ? ct(settings.language, "linkCopied")
+                : ct(settings.language, "shareLink")}
             </button>
             <button
               type="button"
@@ -178,16 +205,16 @@ export default function BuilderPage() {
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
             >
               <RotateCcw className="h-4 w-4" />
-              {t(settings.language, "reset")}
+              {ct(settings.language, "reset")}
             </button>
             <button
               type="button"
               onClick={handleExport}
               disabled={isExporting}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700 disabled:opacity-60 sm:text-sm"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-emerald-700 disabled:opacity-60 sm:text-sm"
             >
               <Download className="h-4 w-4" />
-              {isExporting ? "Menyimpan..." : t(settings.language, "exportPdf")}
+              {isExporting ? "Menyimpan..." : ct(settings.language, "exportPdf")}
             </button>
           </div>
         </div>
@@ -195,13 +222,21 @@ export default function BuilderPage() {
 
       <div className="mx-auto grid max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-2 lg:px-6">
         <div className="space-y-4">
+          {notice ? (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+              {notice}
+            </div>
+          ) : null}
           <LinkedInPrefillPanel
-            currentData={data}
+            currentData={defaultResumeData}
             language={settings.language}
-            onApply={setData}
+            onApply={(resumeData) => {
+              setData(generateCoverLetterFromCv(resumeData, settings.language));
+              setNotice(ct(settings.language, "importSuccess"));
+              setTimeout(() => setNotice(null), 3000);
+            }}
           />
-          <AtsScorePanel result={atsResult} lang={settings.language} />
-          <ResumeForm
+          <CoverLetterForm
             data={data}
             settings={settings}
             onDataChange={setData}
@@ -216,8 +251,8 @@ export default function BuilderPage() {
               {paper.label} · {paper.widthMm}×
               {Math.round(pageLayout?.heightMm ?? paper.heightMm)} mm ·{" "}
               {pageLayout?.isCompressed
-                ? t(settings.language, "paperCompressed")
-                : t(settings.language, "paperAutoFit")}
+                ? ct(settings.language, "paperCompressed")
+                : ct(settings.language, "paperAutoFit")}
             </span>
           </div>
           {exportError ? (
@@ -225,14 +260,14 @@ export default function BuilderPage() {
               {exportError}
             </div>
           ) : null}
-          <ResumePreview
+          <CoverLetterPreview
             ref={previewRef}
             data={data}
             settings={settings}
             onPageLayoutChange={setPageLayout}
           />
           <p className="mt-3 text-center text-xs text-slate-400">
-            100% gratis · Tanpa watermark pada PDF
+            100% gratis · Bagikan link read-only · Data di browser
           </p>
         </div>
       </div>

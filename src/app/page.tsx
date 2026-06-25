@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   CheckCircle2,
   Download,
+  FileSignature,
   FileText,
   Globe2,
   LayoutTemplate,
@@ -87,6 +88,12 @@ export default function HomePage() {
             Portofolio
           </Link>
           <Link
+            href="/cover-letter/builder"
+            className="hidden text-sm font-medium text-slate-600 transition hover:text-slate-900 sm:inline"
+          >
+            Cover Letter
+          </Link>
+          <Link
             href="/builder"
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
           >
@@ -122,6 +129,30 @@ export default function HomePage() {
             >
               <LayoutTemplate className="h-4 w-4 text-violet-600" />
               Buat Portofolio
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-emerald-100 bg-emerald-50/50 p-8 sm:p-10">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Baru
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-900">
+                Cover Letter Generator
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600">
+                Buat surat lamaran profesional dalam hitungan menit. Generate
+                otomatis dari CV, import LinkedIn, export PDF, dan bagikan link.
+              </p>
+            </div>
+            <Link
+              href="/cover-letter/builder"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+            >
+              <FileSignature className="h-4 w-4" />
+              Buat Cover Letter
             </Link>
           </div>
         </section>

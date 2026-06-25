@@ -1,0 +1,67 @@
+.cover-letter-doc {
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  color: #0f172a;
+  font-family: "Times New Roman", Times, serif;
+  line-height: 1.55;
+  padding: 48px 56px;
+}
+
+.cover-letter-doc *,
+.cover-letter-doc *::before,
+.cover-letter-doc *::after {
+  box-sizing: border-box;
+}
+
+.cover-letter-sender {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.cover-letter-sender-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cover-letter-date {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #334155;
+}
+
+.cover-letter-recipient {
+  margin-top: 20px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.cover-letter-greeting {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #0f172a;
+}
+
+.cover-letter-paragraph {
+  margin-top: 14px;
+  font-size: 11px;
+  line-height: 1.65;
+  color: #1e293b;
+  text-align: justify;
+}
+
+.cover-letter-closing {
+  margin-top: 18px;
+  font-size: 11px;
+  color: #1e293b;
+}
+
+.cover-letter-signature {
+  margin-top: 28px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
