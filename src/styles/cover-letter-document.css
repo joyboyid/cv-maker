@@ -65,3 +65,77 @@
   font-weight: 700;
   color: #0f172a;
 }
+
+.cover-letter-re-line {
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.cover-letter-sign-off {
+  margin-top: 18px;
+}
+
+.cover-letter-formal {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.cover-letter-startup {
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 40px;
+}
+
+.cover-letter-startup-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+}
+
+.cover-letter-startup .cover-letter-sender-name {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.cover-letter-startup .cover-letter-paragraph {
+  text-align: left;
+}
+
+.cover-letter-startup .cover-letter-greeting {
+  font-weight: 600;
+}
+
+.cover-letter-academic {
+  font-family: "Times New Roman", Times, serif;
+  padding-top: 40px;
+}
+
+.cover-letter-academic-header {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.cover-letter-academic-header p {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cover-letter-academic-header span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.cover-letter-academic .cover-letter-sender {
+  display: none;
+}
+
+.cover-letter-academic .cover-letter-recipient {
+  margin-top: 12px;
+}

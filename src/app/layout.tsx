@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from "next/font/google";
+import { createPageMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,22 +11,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CV Satu Halaman — Buat Resume ATS-Friendly Gratis",
-  description:
-    "Buat CV dan resume satu halaman online gratis. Template modern, export PDF, bahasa Indonesia & Inggris. Tanpa daftar, tanpa biaya.",
-  keywords: [
-    "buat cv online",
-    "resume generator",
-    "cv ats friendly",
-    "cv satu halaman",
-    "cv fresh graduate",
-  ],
-  openGraph: {
-    title: "CV Satu Halaman — 100% Gratis",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://cv-satu-halaman.vercel.app",
+  ),
+  ...createPageMetadata({
+    title: "CV Satu Halaman — Buat Resume ATS-Friendly Gratis",
     description:
-      "Tool pembuatan CV satu halaman untuk pelamar kerja Indonesia. Gratis untuk semua orang.",
-    type: "website",
-  },
+      "Buat CV, portofolio, dan cover letter online gratis. Template modern, export PDF, multi-draft, bahasa Indonesia & Inggris. Tanpa daftar.",
+    path: "/",
+  }),
 };
 
 export default function RootLayout({

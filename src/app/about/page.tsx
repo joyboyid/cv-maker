@@ -9,6 +9,7 @@ import {
   Tv,
 } from "lucide-react";
 import { SiteFooter } from "@/components/SiteFooter";
+import { createPageMetadata } from "@/lib/seo";
 
 const interests = [
   {
@@ -31,11 +32,12 @@ const interests = [
   },
 ];
 
-export const metadata = {
-  title: "Tentang Boim — CV Satu Halaman",
+export const metadata = createPageMetadata({
+  title: "Tentang Boim",
   description:
     "Kenalan dengan Boim, pembuat CV Satu Halaman — pecinta IT, keamanan siber, dan anime.",
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

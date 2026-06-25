@@ -4,11 +4,14 @@ import { ContactCard } from "@/components/ContactCard";
 import { SiteFooter } from "@/components/SiteFooter";
 import { contactChannels } from "@/lib/contact";
 
-export const metadata = {
-  title: "Contact Me — CV Satu Halaman",
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Contact Me",
   description:
     "Hubungi Boim lewat Telegram @setooo untuk pertanyaan, saran, atau kolaborasi.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

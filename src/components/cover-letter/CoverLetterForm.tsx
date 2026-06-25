@@ -2,6 +2,8 @@
 
 import { Field, inputClass, textareaClass } from "@/components/ui/Field";
 import { ct } from "@/lib/cover-letter-i18n";
+import { COVER_LETTER_TEMPLATE_OPTIONS } from "@/lib/cover-letter-templates";
+import type { CoverLetterTemplateId } from "@/types/cover-letter";
 import { PAPER_SIZE_OPTIONS } from "@/lib/resume-layout";
 import type { CoverLetterData, CoverLetterSettings } from "@/types/cover-letter";
 
@@ -69,6 +71,31 @@ export function CoverLetterForm({
     <div className="space-y-4">
       <SectionCard title={ct(lang, "settings")}>
         <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={ct(lang, "template")}>
+            <select
+              className={inputClass}
+              value={settings.template}
+              onChange={(e) =>
+                onSettingsChange({
+                  ...settings,
+                  template: e.target.value as CoverLetterTemplateId,
+                })
+              }
+            >
+              {COVER_LETTER_TEMPLATE_OPTIONS.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-slate-500">
+              {
+                COVER_LETTER_TEMPLATE_OPTIONS.find(
+                  (option) => option.id === settings.template,
+                )?.hint
+              }
+            </p>
+          </Field>
           <Field label={ct(lang, "language")}>
             <select
               className={inputClass}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Check,
@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { AtsScorePanel } from "@/components/AtsScorePanel";
+import { DraftManager } from "@/components/DraftManager";
 import { LinkedInPrefillPanel } from "@/components/LinkedInPrefillPanel";
 import { ResumeForm } from "@/components/ResumeForm";
 import { ResumePreview } from "@/components/ResumePreview";
@@ -22,47 +23,75 @@ import {
   getPaperDimensions,
   type DynamicPageLayout,
 } from "@/lib/resume-layout";
-import {
-  defaultResumeState,
-  sampleResumeData,
-} from "@/lib/resume-defaults";
+import { defaultResumeState, sampleResumeData } from "@/lib/resume-defaults";
 import { exportElementToPdf, PdfExportError } from "@/lib/pdf-export";
 import { buildShareUrl } from "@/lib/share-resume";
 import { t } from "@/lib/i18n";
+import { useDraftStore } from "@/lib/use-draft-store";
 import {
+  addResumeDraft,
   clearResumeState,
-  loadResumeState,
-  saveResumeState,
+  deleteResumeDraft,
+  duplicateResumeDraft,
+  loadResumeDraftStore,
+  renameResumeDraft,
+  resetResumeDraftStore,
+  saveResumeDraftStore,
+  switchResumeDraft,
+  updateResumeDraftState,
 } from "@/lib/storage";
+import type { ResumeData, ResumeSettings, ResumeState } from "@/types/resume";
 
 export default function BuilderPage() {
-  const [data, setData] = useState(defaultResumeState.data);
-  const [settings, setSettings] = useState(defaultResumeState.settings);
+  const {
+    hydrated,
+    state,
+    setState,
+    draftSummaries,
+    activeDraftId,
+    selectDraft,
+    createDraft,
+    renameDraftById,
+    deleteDraftById,
+    duplicateDraftById,
+    resetActive,
+  } = useDraftStore<ResumeState>({
+    loadStore: loadResumeDraftStore,
+    saveStore: saveResumeDraftStore,
+    defaultState: defaultResumeState,
+    addDraft: addResumeDraft,
+    resetDraft: resetResumeDraftStore,
+    switchDraft: switchResumeDraft,
+    renameDraft: renameResumeDraft,
+    deleteDraft: deleteResumeDraft,
+    duplicateDraft: duplicateResumeDraft,
+    updateDraft: updateResumeDraftState,
+  });
+
+  const data = state.data;
+  const settings = state.settings;
+
+  const setData = (next: ResumeData | ((prev: ResumeData) => ResumeData)) => {
+    setState((prev) => ({
+      ...prev,
+      data: typeof next === "function" ? next(prev.data) : next,
+    }));
+  };
+
+  const setSettings = (
+    next: ResumeSettings | ((prev: ResumeSettings) => ResumeSettings),
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      settings: typeof next === "function" ? next(prev.settings) : next,
+    }));
+  };
+
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   const [pageLayout, setPageLayout] = useState<DynamicPageLayout | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    try {
-      const saved = loadResumeState();
-      setData(saved.data);
-      setSettings(saved.settings);
-    } catch {
-      clearResumeState();
-      setData(defaultResumeState.data);
-      setSettings(defaultResumeState.settings);
-    } finally {
-      setHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    saveResumeState({ data, settings });
-  }, [data, settings, hydrated]);
 
   const paper = useMemo(
     () => getPaperDimensions(settings.paperSize),
@@ -112,14 +141,18 @@ export default function BuilderPage() {
   };
 
   const handleReset = () => {
-    if (!confirm("Reset semua data CV?")) return;
-    clearResumeState();
-    setData(defaultResumeState.data);
-    setSettings(defaultResumeState.settings);
+    if (!confirm("Reset draft CV aktif?")) return;
+    resetActive();
   };
 
   const handleLoadSample = () => {
     setData(sampleResumeData);
+  };
+
+  const handleCreateDraft = () => {
+    const name = prompt("Nama draft baru:", `CV ${draftSummaries.length + 1}`);
+    if (!name?.trim()) return;
+    createDraft(name.trim());
   };
 
   if (!hydrated) {
@@ -195,6 +228,16 @@ export default function BuilderPage() {
 
       <div className="mx-auto grid max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-2 lg:px-6">
         <div className="space-y-4">
+          <DraftManager
+            drafts={draftSummaries}
+            activeId={activeDraftId}
+            language={settings.language}
+            onSelect={selectDraft}
+            onCreate={handleCreateDraft}
+            onRename={renameDraftById}
+            onDelete={deleteDraftById}
+            onDuplicate={duplicateDraftById}
+          />
           <LinkedInPrefillPanel
             currentData={data}
             language={settings.language}

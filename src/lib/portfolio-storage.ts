@@ -1,31 +1,81 @@
 import { defaultPortfolioState } from "@/lib/portfolio-defaults";
+import {
+  addDraftEntry,
+  clearDraftCollectionStorage,
+  createDraftCollection,
+  deleteDraftEntry,
+  duplicateDraftEntry,
+  getActiveDraftState,
+  loadDraftCollectionFromStorage,
+  renameDraftEntry,
+  resetActiveDraftState,
+  saveDraftCollectionToStorage,
+  switchActiveDraft,
+  updateActiveDraftState,
+  type DraftCollection,
+} from "@/lib/draft-storage";
 import { mergePortfolioState } from "@/lib/sanitize-portfolio";
 import type { PortfolioState } from "@/types/portfolio";
 
-const STORAGE_KEY = "portfolio-maker-state-v1";
+const DRAFTS_KEY = "portfolio-drafts-v1";
+const LEGACY_KEY = "portfolio-maker-state-v1";
+
+function normalizePortfolioState(raw: unknown): PortfolioState {
+  return mergePortfolioState(raw);
+}
+
+export function loadPortfolioDraftStore(): DraftCollection<PortfolioState> {
+  return loadDraftCollectionFromStorage(
+    DRAFTS_KEY,
+    defaultPortfolioState,
+    "Portofolio Utama",
+    normalizePortfolioState,
+    {
+      key: LEGACY_KEY,
+      toState: normalizePortfolioState,
+      name: "Portofolio Utama",
+    },
+  );
+}
+
+export function savePortfolioDraftStore(
+  store: DraftCollection<PortfolioState>,
+): void {
+  saveDraftCollectionToStorage(DRAFTS_KEY, store);
+}
 
 export function loadPortfolioState(): PortfolioState {
-  if (typeof window === "undefined") {
-    return defaultPortfolioState;
-  }
-
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultPortfolioState;
-
-    const parsed = JSON.parse(raw) as Partial<PortfolioState>;
-    return mergePortfolioState(parsed);
-  } catch {
-    return defaultPortfolioState;
-  }
+  return getActiveDraftState(loadPortfolioDraftStore()) ?? defaultPortfolioState;
 }
 
 export function savePortfolioState(state: PortfolioState): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const store = loadPortfolioDraftStore();
+  savePortfolioDraftStore(updateActiveDraftState(store, state));
 }
 
 export function clearPortfolioState(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(STORAGE_KEY);
+  clearDraftCollectionStorage(DRAFTS_KEY);
+  clearDraftCollectionStorage(LEGACY_KEY);
 }
+
+export function addPortfolioDraft(
+  store: DraftCollection<PortfolioState>,
+  name: string,
+): DraftCollection<PortfolioState> {
+  const active = getActiveDraftState(store) ?? defaultPortfolioState;
+  return addDraftEntry(store, name, active);
+}
+
+export function resetPortfolioDraftStore(
+  store: DraftCollection<PortfolioState>,
+): DraftCollection<PortfolioState> {
+  return resetActiveDraftState(store, defaultPortfolioState);
+}
+
+export {
+  switchActiveDraft as switchPortfolioDraft,
+  renameDraftEntry as renamePortfolioDraft,
+  deleteDraftEntry as deletePortfolioDraft,
+  duplicateDraftEntry as duplicatePortfolioDraft,
+  updateActiveDraftState as updatePortfolioDraftState,
+};

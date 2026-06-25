@@ -27,6 +27,7 @@ export const defaultCoverLetterData: CoverLetterData = {
 };
 
 export const defaultCoverLetterSettings: CoverLetterSettings = {
+  template: "formal",
   language: "id",
   paperSize: "a4",
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Check,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { CoverLetterForm } from "@/components/cover-letter/CoverLetterForm";
 import { CoverLetterPreview } from "@/components/cover-letter/CoverLetterPreview";
+import { DraftManager } from "@/components/DraftManager";
 import { LinkedInPrefillPanel } from "@/components/LinkedInPrefillPanel";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
@@ -24,50 +25,86 @@ import {
 } from "@/lib/cover-letter-defaults";
 import { ct } from "@/lib/cover-letter-i18n";
 import {
-  clearCoverLetterState,
-  loadCoverLetterState,
-  saveCoverLetterState,
+  addCoverLetterDraft,
+  deleteCoverLetterDraft,
+  duplicateCoverLetterDraft,
+  loadCoverLetterDraftStore,
+  renameCoverLetterDraft,
+  resetCoverLetterDraftStore,
+  saveCoverLetterDraftStore,
+  switchCoverLetterDraft,
+  updateCoverLetterDraftState,
 } from "@/lib/cover-letter-storage";
 import { exportElementToPdf, PdfExportError } from "@/lib/pdf-export";
-
 import {
   getPaperDimensions,
   type DynamicPageLayout,
 } from "@/lib/resume-layout";
 import { buildCoverLetterShareUrl } from "@/lib/share-cover-letter";
-import { loadResumeState } from "@/lib/storage";
 import { defaultResumeData } from "@/lib/resume-defaults";
-
+import { loadResumeState } from "@/lib/storage";
+import { useDraftStore } from "@/lib/use-draft-store";
+import type {
+  CoverLetterData,
+  CoverLetterSettings,
+  CoverLetterState,
+} from "@/types/cover-letter";
 
 export default function CoverLetterBuilderPage() {
-  const [data, setData] = useState(defaultCoverLetterState.data);
-  const [settings, setSettings] = useState(defaultCoverLetterState.settings);
-  const [hydrated, setHydrated] = useState(false);
+  const {
+    hydrated,
+    state,
+    setState,
+    draftSummaries,
+    activeDraftId,
+    selectDraft,
+    createDraft,
+    renameDraftById,
+    deleteDraftById,
+    duplicateDraftById,
+    resetActive,
+  } = useDraftStore<CoverLetterState>({
+    loadStore: loadCoverLetterDraftStore,
+    saveStore: saveCoverLetterDraftStore,
+    defaultState: defaultCoverLetterState,
+    addDraft: addCoverLetterDraft,
+    resetDraft: resetCoverLetterDraftStore,
+    switchDraft: switchCoverLetterDraft,
+    renameDraft: renameCoverLetterDraft,
+    deleteDraft: deleteCoverLetterDraft,
+    duplicateDraft: duplicateCoverLetterDraft,
+    updateDraft: updateCoverLetterDraftState,
+  });
+
+  const data = state.data;
+  const settings = state.settings;
+
+  const setData = (
+    next: CoverLetterData | ((prev: CoverLetterData) => CoverLetterData),
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      data: typeof next === "function" ? next(prev.data) : next,
+    }));
+  };
+
+  const setSettings = (
+    next:
+      | CoverLetterSettings
+      | ((prev: CoverLetterSettings) => CoverLetterSettings),
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      settings: typeof next === "function" ? next(prev.settings) : next,
+    }));
+  };
+
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [pageLayout, setPageLayout] = useState<DynamicPageLayout | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    try {
-      const saved = loadCoverLetterState();
-      setData(saved.data);
-      setSettings(saved.settings);
-    } catch {
-      clearCoverLetterState();
-      setData(defaultCoverLetterState.data);
-      setSettings(defaultCoverLetterState.settings);
-    } finally {
-      setHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    saveCoverLetterState({ data, settings });
-  }, [data, settings, hydrated]);
 
   const paper = useMemo(
     () => getPaperDimensions(settings.paperSize),
@@ -112,10 +149,8 @@ export default function CoverLetterBuilderPage() {
   };
 
   const handleReset = () => {
-    if (!confirm("Reset semua data cover letter?")) return;
-    clearCoverLetterState();
-    setData(defaultCoverLetterState.data);
-    setSettings(defaultCoverLetterState.settings);
+    if (!confirm("Reset draft cover letter aktif?")) return;
+    resetActive();
     setNotice(null);
   };
 
@@ -137,6 +172,15 @@ export default function CoverLetterBuilderPage() {
     } catch {
       setNotice("Gagal generate dari CV.");
     }
+  };
+
+  const handleCreateDraft = () => {
+    const name = prompt(
+      "Nama draft baru:",
+      `Cover Letter ${draftSummaries.length + 1}`,
+    );
+    if (!name?.trim()) return;
+    createDraft(name.trim());
   };
 
   if (!hydrated) {
@@ -222,6 +266,16 @@ export default function CoverLetterBuilderPage() {
 
       <div className="mx-auto grid max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-2 lg:px-6">
         <div className="space-y-4">
+          <DraftManager
+            drafts={draftSummaries}
+            activeId={activeDraftId}
+            language={settings.language}
+            onSelect={selectDraft}
+            onCreate={handleCreateDraft}
+            onRename={renameDraftById}
+            onDelete={deleteDraftById}
+            onDuplicate={duplicateDraftById}
+          />
           {notice ? (
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
               {notice}
@@ -248,11 +302,8 @@ export default function CoverLetterBuilderPage() {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-700">Preview</h2>
             <span className="text-xs text-slate-500">
-              {paper.label} · {paper.widthMm}×
-              {Math.round(pageLayout?.heightMm ?? paper.heightMm)} mm ·{" "}
-              {pageLayout?.isCompressed
-                ? ct(settings.language, "paperCompressed")
-                : ct(settings.language, "paperAutoFit")}
+              {paper.label} · {settings.template} · {paper.widthMm}×
+              {Math.round(pageLayout?.heightMm ?? paper.heightMm)} mm
             </span>
           </div>
           {exportError ? (

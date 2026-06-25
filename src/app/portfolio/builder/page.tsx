@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowLeft,
   Check,
@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Sparkles,
 } from "lucide-react";
+import { DraftManager } from "@/components/DraftManager";
 import { PortfolioForm } from "@/components/portfolio/PortfolioForm";
 import { PortfolioPreview } from "@/components/portfolio/PortfolioPreview";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -21,44 +22,76 @@ import {
   samplePortfolioData,
 } from "@/lib/portfolio-defaults";
 import { pt } from "@/lib/portfolio-i18n";
-import { buildPdfPortfolioFilename } from "@/lib/portfolio-utils";
 import {
-  clearPortfolioState,
-  loadPortfolioState,
-  savePortfolioState,
+  addPortfolioDraft,
+  deletePortfolioDraft,
+  duplicatePortfolioDraft,
+  loadPortfolioDraftStore,
+  renamePortfolioDraft,
+  resetPortfolioDraftStore,
+  savePortfolioDraftStore,
+  switchPortfolioDraft,
+  updatePortfolioDraftState,
 } from "@/lib/portfolio-storage";
+import { buildPdfPortfolioFilename } from "@/lib/portfolio-utils";
 import { exportElementToPdf, PdfExportError } from "@/lib/pdf-export";
 import { buildPortfolioShareUrl } from "@/lib/share-portfolio";
 import { loadResumeState } from "@/lib/storage";
+import { useDraftStore } from "@/lib/use-draft-store";
+import type { PortfolioData, PortfolioSettings, PortfolioState } from "@/types/portfolio";
 
 export default function PortfolioBuilderPage() {
-  const [data, setData] = useState(defaultPortfolioState.data);
-  const [settings, setSettings] = useState(defaultPortfolioState.settings);
-  const [hydrated, setHydrated] = useState(false);
+  const {
+    hydrated,
+    state,
+    setState,
+    draftSummaries,
+    activeDraftId,
+    selectDraft,
+    createDraft,
+    renameDraftById,
+    deleteDraftById,
+    duplicateDraftById,
+    resetActive,
+  } = useDraftStore<PortfolioState>({
+    loadStore: loadPortfolioDraftStore,
+    saveStore: savePortfolioDraftStore,
+    defaultState: defaultPortfolioState,
+    addDraft: addPortfolioDraft,
+    resetDraft: resetPortfolioDraftStore,
+    switchDraft: switchPortfolioDraft,
+    renameDraft: renamePortfolioDraft,
+    deleteDraft: deletePortfolioDraft,
+    duplicateDraft: duplicatePortfolioDraft,
+    updateDraft: updatePortfolioDraftState,
+  });
+
+  const data = state.data;
+  const settings = state.settings;
+
+  const setData = (
+    next: PortfolioData | ((prev: PortfolioData) => PortfolioData),
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      data: typeof next === "function" ? next(prev.data) : next,
+    }));
+  };
+
+  const setSettings = (
+    next: PortfolioSettings | ((prev: PortfolioSettings) => PortfolioSettings),
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      settings: typeof next === "function" ? next(prev.settings) : next,
+    }));
+  };
+
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [importNotice, setImportNotice] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    try {
-      const saved = loadPortfolioState();
-      setData(saved.data);
-      setSettings(saved.settings);
-    } catch {
-      clearPortfolioState();
-      setData(defaultPortfolioState.data);
-      setSettings(defaultPortfolioState.settings);
-    } finally {
-      setHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    savePortfolioState({ data, settings });
-  }, [data, settings, hydrated]);
 
   const handleExport = async () => {
     if (!previewRef.current) {
@@ -98,10 +131,8 @@ export default function PortfolioBuilderPage() {
   };
 
   const handleReset = () => {
-    if (!confirm("Reset semua data portofolio?")) return;
-    clearPortfolioState();
-    setData(defaultPortfolioState.data);
-    setSettings(defaultPortfolioState.settings);
+    if (!confirm("Reset draft portofolio aktif?")) return;
+    resetActive();
     setImportNotice(null);
   };
 
@@ -123,6 +154,15 @@ export default function PortfolioBuilderPage() {
     } catch {
       setImportNotice("Gagal import data CV.");
     }
+  };
+
+  const handleCreateDraft = () => {
+    const name = prompt(
+      "Nama draft baru:",
+      `Portofolio ${draftSummaries.length + 1}`,
+    );
+    if (!name?.trim()) return;
+    createDraft(name.trim());
   };
 
   if (!hydrated) {
@@ -205,9 +245,19 @@ export default function PortfolioBuilderPage() {
       </header>
 
       <div className="mx-auto grid max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-2 lg:px-6">
-        <div>
+        <div className="space-y-4">
+          <DraftManager
+            drafts={draftSummaries}
+            activeId={activeDraftId}
+            language={settings.language}
+            onSelect={selectDraft}
+            onCreate={handleCreateDraft}
+            onRename={renameDraftById}
+            onDelete={deleteDraftById}
+            onDuplicate={duplicateDraftById}
+          />
           {importNotice ? (
-            <div className="mb-4 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-800">
+            <div className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-800">
               {importNotice}
             </div>
           ) : null}

@@ -31,7 +31,10 @@ export interface CoverLetterData {
   content: CoverLetterContent;
 }
 
+export type CoverLetterTemplateId = "formal" | "startup" | "academic";
+
 export interface CoverLetterSettings {
+  template: CoverLetterTemplateId;
   language: Language;
   paperSize: PaperSize;
 }

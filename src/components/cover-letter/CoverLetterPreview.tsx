@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { CoverLetterDocument } from "@/components/cover-letter/CoverLetterDocument";
+import { CoverLetterRenderer } from "@/components/cover-letter/CoverLetterRenderer";
 import {
   computeDynamicPageLayout,
   getPaperDimensions,
@@ -39,8 +39,13 @@ export const CoverLetterPreview = forwardRef<HTMLDivElement, CoverLetterPreviewP
 
     const cleanData = useMemo(() => mergeCoverLetterData(data), [data]);
     const measureKey = useMemo(
-      () => JSON.stringify({ data: cleanData, paperSize: settings.paperSize }),
-      [cleanData, settings.paperSize],
+      () =>
+        JSON.stringify({
+          data: cleanData,
+          paperSize: settings.paperSize,
+          template: settings.template,
+        }),
+      [cleanData, settings.paperSize, settings.template],
     );
 
     useLayoutEffect(() => {
@@ -116,10 +121,7 @@ export const CoverLetterPreview = forwardRef<HTMLDivElement, CoverLetterPreviewP
                   transformOrigin: "top left",
                 }}
               >
-                <CoverLetterDocument
-                  data={cleanData}
-                  language={settings.language}
-                />
+                <CoverLetterRenderer data={cleanData} settings={settings} />
               </div>
             </div>
           </div>
@@ -137,7 +139,7 @@ export const CoverLetterPreview = forwardRef<HTMLDivElement, CoverLetterPreviewP
             pointerEvents: "none",
           }}
         >
-          <CoverLetterDocument data={cleanData} language={settings.language} />
+          <CoverLetterRenderer data={cleanData} settings={settings} />
         </div>
       </div>
     );

@@ -6,10 +6,12 @@ import type {
   CoverLetterSender,
   CoverLetterSettings,
   CoverLetterState,
+  CoverLetterTemplateId,
 } from "@/types/cover-letter";
 import type { Language, PaperSize } from "@/types/resume";
 
 const PAPER_SIZES: PaperSize[] = ["a4", "letter", "legal", "folio"];
+const TEMPLATES: CoverLetterTemplateId[] = ["formal", "startup", "academic"];
 
 function asString(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback;
@@ -79,6 +81,9 @@ export function normalizeCoverLetterSettings(
       : {};
 
   return {
+    template: TEMPLATES.includes(source.template as CoverLetterTemplateId)
+      ? (source.template as CoverLetterTemplateId)
+      : defaultCoverLetterSettings.template,
     language:
       source.language === "en" || source.language === "id"
         ? source.language
