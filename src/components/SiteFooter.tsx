@@ -11,6 +11,18 @@ export function SiteFooter() {
         </p>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
           <Link
+            href="/builder"
+            className="text-sm text-blue-600 transition hover:text-blue-700"
+          >
+            Buat CV
+          </Link>
+          <Link
+            href="/portfolio/builder"
+            className="text-sm text-blue-600 transition hover:text-blue-700"
+          >
+            Buat Portofolio
+          </Link>
+          <Link
             href="/about"
             className="text-sm text-blue-600 transition hover:text-blue-700"
           >
@@ -21,6 +33,12 @@ export function SiteFooter() {
             className="text-sm text-blue-600 transition hover:text-blue-700"
           >
             Donasi
+          </Link>
+          <Link
+            href="/contact"
+            className="text-sm text-blue-600 transition hover:text-blue-700"
+          >
+            Contact
           </Link>
         </div>
       </div>

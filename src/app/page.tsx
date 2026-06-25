@@ -4,6 +4,7 @@ import {
   Download,
   FileText,
   Globe2,
+  LayoutTemplate,
   Shield,
   Sparkles,
 } from "lucide-react";
@@ -74,6 +75,18 @@ export default function HomePage() {
             Donasi
           </Link>
           <Link
+            href="/contact"
+            className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
+          >
+            Contact
+          </Link>
+          <Link
+            href="/portfolio/builder"
+            className="hidden text-sm font-medium text-slate-600 transition hover:text-slate-900 sm:inline"
+          >
+            Portofolio
+          </Link>
+          <Link
             href="/builder"
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
           >
@@ -96,12 +109,43 @@ export default function HomePage() {
             Tool pembuatan resume untuk pelamar kerja di Indonesia. Format
             ATS-friendly, preview langsung, export PDF — gratis untuk semua orang.
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/builder"
               className="inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
             >
               Buat CV Sekarang
+            </Link>
+            <Link
+              href="/portfolio/builder"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+            >
+              <LayoutTemplate className="h-4 w-4 text-violet-600" />
+              Buat Portofolio
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-violet-100 bg-violet-50/50 p-8 sm:p-10">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+                Baru
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-900">
+                Generator Portofolio
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600">
+                Tampilkan proyek, skill, dan profil kamu dalam halaman web
+                profesional. 3 template, share link, import dari CV — gratis
+                tanpa daftar.
+              </p>
+            </div>
+            <Link
+              href="/portfolio/builder"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-violet-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-violet-700"
+            >
+              Coba Portofolio
             </Link>
           </div>
         </section>
