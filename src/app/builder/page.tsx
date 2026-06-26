@@ -14,6 +14,7 @@ import { DraftManager } from "@/components/DraftManager";
 import { LinkedInPrefillPanel } from "@/components/LinkedInPrefillPanel";
 import { ResumeForm } from "@/components/ResumeForm";
 import { ResumePreview } from "@/components/ResumePreview";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { calculateAtsScore } from "@/lib/ats-score";
@@ -42,6 +43,7 @@ import {
 import type { ResumeData, ResumeSettings, ResumeState } from "@/types/resume";
 
 export default function BuilderPage() {
+  const { t: ts } = useSiteLocale();
   const {
     hydrated,
     state,
@@ -156,9 +158,7 @@ export default function BuilderPage() {
 
   if (!hydrated) {
     return (
-      <div className="shell-loading">
-        Memuat...
-      </div>
+      <div className="shell-loading">{ts("common_loading")}</div>
     );
   }
 
@@ -171,7 +171,7 @@ export default function BuilderPage() {
         brand={
           <div className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-blue-600" />
-            <span className="shell-title">CV Satu Halaman</span>
+              <span className="shell-title">{ts("site_name")}</span>
           </div>
         }
         actions={
@@ -213,7 +213,7 @@ export default function BuilderPage() {
               className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700 disabled:opacity-60 sm:text-sm"
             >
               <Download className="h-4 w-4" />
-              {isExporting ? "Menyimpan..." : t(settings.language, "exportPdf")}
+              {isExporting ? ts("builder_export_saving") : t(settings.language, "exportPdf")}
             </button>
           </>
         }
@@ -247,7 +247,7 @@ export default function BuilderPage() {
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="shell-title text-sm">Preview</h2>
+            <h2 className="shell-title text-sm">{ts("common_preview")}</h2>
             <span className="shell-muted text-xs">
               {paper.label} · {paper.widthMm}×
               {Math.round(pageLayout?.heightMm ?? paper.heightMm)} mm ·{" "}
@@ -268,7 +268,7 @@ export default function BuilderPage() {
             onPageLayoutChange={setPageLayout}
           />
           <p className="shell-muted mt-3 text-center text-xs">
-            100% gratis · Tanpa watermark pada PDF
+            {ts("builder_preview_footer_cv")}
           </p>
         </div>
       </div>

@@ -1,8 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import { ToolsMenu } from "@/components/ToolsMenu";
-import { siteConfig } from "@/lib/site";
-import type { SiteToolId } from "@/lib/site-tools";
 
 type SiteHeaderLayout = "marketing" | "compact" | "builder" | "share";
 
@@ -10,7 +11,7 @@ interface SiteHeaderProps {
   layout?: SiteHeaderLayout;
   sticky?: boolean;
   maxWidth?: "3xl" | "4xl" | "6xl" | "full";
-  activeToolId?: SiteToolId;
+  activeToolId?: "cv" | "portfolio" | "cover-letter";
   backHref?: string;
   backLabel?: string;
   brand?: React.ReactNode;
@@ -32,12 +33,15 @@ export function SiteHeader({
   maxWidth = layout === "marketing" ? "6xl" : layout === "builder" ? "full" : "4xl",
   activeToolId,
   backHref = "/",
-  backLabel = "Beranda",
+  backLabel,
   brand,
   shareMeta,
   actions,
   rightAction,
 }: SiteHeaderProps) {
+  const { t } = useSiteLocale();
+  const resolvedBackLabel = backLabel ?? t("nav_home");
+
   const shellClass = sticky
     ? "shell-header"
     : layout === "share"
@@ -56,7 +60,7 @@ export function SiteHeader({
             <div className="rounded-lg bg-blue-600 p-2 text-white">
               <FileText className="h-5 w-5" />
             </div>
-            <span className="shell-heading text-lg">{siteConfig.name}</span>
+            <span className="shell-heading text-lg">{t("site_name")}</span>
           </Link>
         ) : null}
 
@@ -67,7 +71,7 @@ export function SiteHeader({
               className="shell-link inline-flex shrink-0 items-center gap-1.5"
             >
               <ArrowLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">{backLabel}</span>
+              <span className="hidden sm:inline">{resolvedBackLabel}</span>
             </Link>
             {layout === "builder" && brand ? (
               <>
@@ -92,16 +96,16 @@ export function SiteHeader({
         {layout === "marketing" ? (
           <nav className="hidden items-center gap-3 md:flex">
             <Link href="/panduan" className="shell-link font-medium">
-              Panduan
+              {t("nav_guides")}
             </Link>
             <Link href="/about" className="shell-link font-medium">
-              Tentang
+              {t("nav_about")}
             </Link>
             <Link href="/donations" className="shell-link font-medium">
-              Donasi
+              {t("nav_donations")}
             </Link>
             <Link href="/contact" className="shell-link font-medium">
-              Contact
+              {t("nav_contact")}
             </Link>
           </nav>
         ) : null}

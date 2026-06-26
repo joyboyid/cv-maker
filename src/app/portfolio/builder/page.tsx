@@ -13,6 +13,7 @@ import {
 import { DraftManager } from "@/components/DraftManager";
 import { PortfolioForm } from "@/components/portfolio/PortfolioForm";
 import { PortfolioPreview } from "@/components/portfolio/PortfolioPreview";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
@@ -40,6 +41,7 @@ import { useDraftStore } from "@/lib/use-draft-store";
 import type { PortfolioData, PortfolioSettings, PortfolioState } from "@/types/portfolio";
 
 export default function PortfolioBuilderPage() {
+  const { t: ts } = useSiteLocale();
   const {
     hydrated,
     state,
@@ -166,9 +168,7 @@ export default function PortfolioBuilderPage() {
 
   if (!hydrated) {
     return (
-      <div className="shell-loading">
-        Memuat...
-      </div>
+      <div className="shell-loading">{ts("common_loading")}</div>
     );
   }
 
@@ -181,7 +181,7 @@ export default function PortfolioBuilderPage() {
         brand={
           <div className="flex items-center gap-2">
             <LayoutTemplate className="h-5 w-5 text-violet-600" />
-            <span className="shell-title">Portofolio</span>
+            <span className="shell-title">{ts("tool_portfolio_label")}</span>
           </div>
         }
         actions={
@@ -231,7 +231,7 @@ export default function PortfolioBuilderPage() {
               className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-violet-700 disabled:opacity-60 sm:text-sm"
             >
               <Download className="h-4 w-4" />
-              {isExporting ? "Menyimpan..." : pt(settings.language, "exportPdf")}
+              {isExporting ? ts("builder_export_saving") : pt(settings.language, "exportPdf")}
             </button>
           </>
         }
@@ -264,9 +264,9 @@ export default function PortfolioBuilderPage() {
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="shell-title text-sm">Preview</h2>
+            <h2 className="shell-title text-sm">{ts("common_preview")}</h2>
             <span className="shell-muted text-xs">
-              Template {settings.template} · Web layout
+              {ts("builder_portfolio_layout").replace("{template}", settings.template)}
             </span>
           </div>
           {exportError ? (
@@ -276,7 +276,7 @@ export default function PortfolioBuilderPage() {
           ) : null}
           <PortfolioPreview ref={previewRef} data={data} settings={settings} />
           <p className="shell-muted mt-3 text-center text-xs">
-            100% gratis · Bagikan link read-only · Data di browser
+            {ts("builder_preview_footer_share")}
           </p>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, ExternalLink, Send } from "lucide-react";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import type { ContactChannel } from "@/lib/contact";
 
 interface ContactCardProps {
@@ -9,6 +10,7 @@ interface ContactCardProps {
 }
 
 export function ContactCard({ channel }: ContactCardProps) {
+  const { t } = useSiteLocale();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -43,7 +45,7 @@ export function ContactCard({ channel }: ContactCardProps) {
             className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-sky-700"
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            Chat
+            {t("common_chat")}
           </a>
           <button
             type="button"
@@ -53,12 +55,12 @@ export function ContactCard({ channel }: ContactCardProps) {
             {copied ? (
               <>
                 <Check className="h-3.5 w-3.5 text-emerald-600" />
-                Tersalin
+                {t("common_copied")}
               </>
             ) : (
               <>
                 <Copy className="h-3.5 w-3.5" />
-                Salin
+                {t("common_copy")}
               </>
             )}
           </button>

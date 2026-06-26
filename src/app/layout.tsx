@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from "next/font/google";
+import { LocaleProvider } from "@/components/LocaleProvider";
+import { LocaleToggle } from "@/components/LocaleToggle";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LOCALE_STORAGE_KEY } from "@/lib/site-locale";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 import { createPageMetadata } from "@/lib/seo";
 import "./globals.css";
@@ -26,15 +29,22 @@ export const metadata: Metadata = {
   }),
 };
 
-const themeScript = `
+const bootScript = `
 (function() {
   try {
-    var key = ${JSON.stringify(THEME_STORAGE_KEY)};
-    var stored = localStorage.getItem(key);
-    var mode = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+    var themeKey = ${JSON.stringify(THEME_STORAGE_KEY)};
+    var storedTheme = localStorage.getItem(themeKey);
+    var mode = storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system' ? storedTheme : 'system';
     var dark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.classList.toggle('dark', dark);
     document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+
+    var localeKey = ${JSON.stringify(LOCALE_STORAGE_KEY)};
+    var storedLocale = localStorage.getItem(localeKey);
+    var locale = storedLocale === 'en' || storedLocale === 'id'
+      ? storedLocale
+      : (navigator.language && navigator.language.toLowerCase().indexOf('en') === 0 ? 'en' : 'id');
+    document.documentElement.lang = locale;
   } catch (e) {}
 })();
 `;
@@ -51,14 +61,17 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
       <body className="min-h-full font-sans">
-        <ThemeProvider>
-          {children}
-          <ThemeToggle />
-          <ServiceWorkerRegister />
-        </ThemeProvider>
+        <LocaleProvider>
+          <ThemeProvider>
+            {children}
+            <LocaleToggle />
+            <ThemeToggle />
+            <ServiceWorkerRegister />
+          </ThemeProvider>
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

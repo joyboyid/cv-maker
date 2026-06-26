@@ -1,14 +1,20 @@
+"use client";
+
 import Link from "next/link";
 import { BookOpen, Clock } from "lucide-react";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import {
-  seoCategoryLabels,
-  type SeoArticle,
-  type SeoArticleBlock,
-} from "@/lib/seo-content";
+import { getGuideCategoryLabel } from "@/lib/site-i18n";
+import type { SeoArticle, SeoArticleBlock } from "@/lib/seo-content";
 
-function ArticleBlock({ block }: { block: SeoArticleBlock }) {
+function ArticleBlock({
+  block,
+  tipLabel,
+}: {
+  block: SeoArticleBlock;
+  tipLabel: string;
+}) {
   if (block.type === "h2" && block.text) {
     return <h2 className="shell-heading mt-8 text-xl first:mt-0">{block.text}</h2>;
   }
@@ -39,7 +45,7 @@ function ArticleBlock({ block }: { block: SeoArticleBlock }) {
   if (block.type === "tip" && block.text) {
     return (
       <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50/60 px-4 py-3 text-sm leading-relaxed text-blue-900 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-200">
-        <strong className="font-semibold">Tips: </strong>
+        <strong className="font-semibold">{tipLabel} </strong>
         {block.text}
       </div>
     );
@@ -47,18 +53,21 @@ function ArticleBlock({ block }: { block: SeoArticleBlock }) {
   return null;
 }
 
-function FaqSection({ items }: { items: SeoArticle["faq"] }) {
+function FaqSection({
+  items,
+  title,
+}: {
+  items: SeoArticle["faq"];
+  title: string;
+}) {
   if (items.length === 0) return null;
 
   return (
     <section className="mt-10">
-      <h2 className="shell-heading text-xl">Pertanyaan umum</h2>
+      <h2 className="shell-heading text-xl">{title}</h2>
       <div className="mt-4 space-y-3">
         {items.map((item) => (
-          <details
-            key={item.question}
-            className="shell-card group"
-          >
+          <details key={item.question} className="shell-card group">
             <summary className="shell-title cursor-pointer list-none text-sm [&::-webkit-details-marker]:hidden">
               {item.question}
             </summary>
@@ -76,13 +85,16 @@ interface SeoArticleLayoutProps {
 }
 
 export function SeoArticleLayout({ article, related = [] }: SeoArticleLayoutProps) {
+  const { locale, t } = useSiteLocale();
+  const dateLocale = locale === "en" ? "en-US" : "id-ID";
+
   return (
     <div className="shell-page-gradient">
       <SiteHeader
         layout="compact"
         maxWidth="3xl"
         backHref="/panduan"
-        backLabel="Panduan"
+        backLabel={t("guides_back")}
         rightAction={
           <Link
             href={article.cta.href}
@@ -94,17 +106,24 @@ export function SeoArticleLayout({ article, related = [] }: SeoArticleLayoutProp
       />
 
       <main className="mx-auto max-w-3xl px-6 pb-20">
+        {locale === "en" ? (
+          <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50/80 px-4 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+            {t("guides_id_notice")}
+          </p>
+        ) : null}
+
         <article className="shell-card-lg p-8 sm:p-10">
           <div className="flex flex-wrap items-center gap-3 text-xs">
             <span className="rounded-full bg-blue-100 px-2.5 py-1 font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-              {seoCategoryLabels[article.category]}
+              {getGuideCategoryLabel(locale, article.category)}
             </span>
             <span className="shell-muted inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
               {article.readTime}
             </span>
             <span className="shell-muted">
-              Diperbarui {new Date(article.updatedAt).toLocaleDateString("id-ID", {
+              {t("guides_updated")}{" "}
+              {new Date(article.updatedAt).toLocaleDateString(dateLocale, {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -121,9 +140,13 @@ export function SeoArticleLayout({ article, related = [] }: SeoArticleLayoutProp
 
           <div className="mt-8 border-t border-[var(--shell-border)] pt-8">
             {article.blocks.map((block, index) => (
-              <ArticleBlock key={`${block.type}-${index}`} block={block} />
+              <ArticleBlock
+                key={`${block.type}-${index}`}
+                block={block}
+                tipLabel={t("guides_tip_label")}
+              />
             ))}
-            <FaqSection items={article.faq} />
+            <FaqSection items={article.faq} title={t("guides_faq_title")} />
           </div>
         </article>
 
@@ -136,13 +159,13 @@ export function SeoArticleLayout({ article, related = [] }: SeoArticleLayoutProp
             href={article.cta.href}
             className="mt-5 inline-flex rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
           >
-            Mulai sekarang
+            {t("common_start_now")}
           </Link>
         </section>
 
         {related.length > 0 ? (
           <section className="mt-10">
-            <h2 className="shell-heading text-lg">Baca juga</h2>
+            <h2 className="shell-heading text-lg">{t("guides_read_also")}</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {related.map((item) => (
                 <Link
@@ -151,7 +174,7 @@ export function SeoArticleLayout({ article, related = [] }: SeoArticleLayoutProp
                   className="shell-card transition hover:border-blue-300 dark:hover:border-blue-700"
                 >
                   <p className="text-xs font-medium text-blue-600 dark:text-blue-400">
-                    {seoCategoryLabels[item.category]}
+                    {getGuideCategoryLabel(locale, item.category)}
                   </p>
                   <h3 className="shell-title mt-1 text-sm">{item.title}</h3>
                   <p className="shell-muted mt-2 line-clamp-2 text-xs">
@@ -174,6 +197,8 @@ interface SeoHubCardProps {
 }
 
 export function SeoHubCard({ article }: SeoHubCardProps) {
+  const { locale, t } = useSiteLocale();
+
   return (
     <Link
       href={`/panduan/${article.slug}`}
@@ -181,7 +206,7 @@ export function SeoHubCard({ article }: SeoHubCardProps) {
     >
       <div className="flex items-start justify-between gap-3">
         <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-          {seoCategoryLabels[article.category]}
+          {getGuideCategoryLabel(locale, article.category)}
         </span>
         <span className="shell-muted inline-flex items-center gap-1 text-xs">
           <Clock className="h-3.5 w-3.5" />
@@ -192,7 +217,7 @@ export function SeoHubCard({ article }: SeoHubCardProps) {
       <p className="shell-muted mt-2 text-sm leading-relaxed">{article.description}</p>
       <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 dark:text-blue-400">
         <BookOpen className="h-4 w-4" />
-        Baca panduan
+        {t("common_read_guide")}
       </span>
     </Link>
   );

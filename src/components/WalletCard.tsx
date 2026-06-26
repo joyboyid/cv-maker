@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, ExternalLink } from "lucide-react";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import type { DonationMethod } from "@/lib/donations";
 
 interface WalletCardProps {
@@ -9,6 +10,7 @@ interface WalletCardProps {
 }
 
 export function WalletCard({ method }: WalletCardProps) {
+  const { t } = useSiteLocale();
   const [copied, setCopied] = useState(false);
   const copyValue = method.href ?? method.address;
 
@@ -45,7 +47,7 @@ export function WalletCard({ method }: WalletCardProps) {
               className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-sky-700"
             >
               <ExternalLink className="h-3.5 w-3.5" />
-              Buka
+              {t("common_open")}
             </a>
           ) : null}
           <button
@@ -56,12 +58,12 @@ export function WalletCard({ method }: WalletCardProps) {
             {copied ? (
               <>
                 <Check className="h-3.5 w-3.5 text-emerald-600" />
-                Tersalin
+                {t("common_copied")}
               </>
             ) : (
               <>
                 <Copy className="h-3.5 w-3.5" />
-                Salin
+                {t("common_copy")}
               </>
             )}
           </button>

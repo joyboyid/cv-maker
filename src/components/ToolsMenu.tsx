@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Wrench } from "lucide-react";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import {
   getActiveToolId,
-  siteTools,
+  getSiteTools,
   type SiteToolId,
 } from "@/lib/site-tools";
 
@@ -22,6 +23,8 @@ export function ToolsMenu({
   className = "",
 }: ToolsMenuProps) {
   const pathname = usePathname();
+  const { locale, t } = useSiteLocale();
+  const siteTools = getSiteTools(locale);
   const resolvedActive = activeToolId ?? getActiveToolId(pathname);
   const activeTool = siteTools.find((tool) => tool.id === resolvedActive);
 
@@ -59,8 +62,8 @@ export function ToolsMenu({
         className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--shell-border)] bg-[var(--shell-surface)] px-3 py-2 text-sm font-medium text-[var(--shell-heading)] transition hover:bg-[var(--shell-hover)]"
       >
         <Wrench className="h-4 w-4 text-blue-600" />
-        <span className="hidden sm:inline">Tools</span>
-        <span className="sm:hidden">{activeTool?.shortLabel ?? "Tools"}</span>
+        <span className="hidden sm:inline">{t("tools_label")}</span>
+        <span className="sm:hidden">{activeTool?.shortLabel ?? t("tools_label")}</span>
         <ChevronDown
           className={`h-4 w-4 text-[var(--shell-muted)] transition ${open ? "rotate-180" : ""}`}
         />
@@ -74,7 +77,7 @@ export function ToolsMenu({
           }`}
         >
           <p className="shell-muted px-2.5 py-1.5 text-[11px] font-medium uppercase tracking-wide">
-            Pilih tool
+            {t("tools_pick")}
           </p>
           {siteTools.map((tool) => {
             const isActive = tool.id === resolvedActive;

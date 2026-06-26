@@ -14,6 +14,7 @@ import { CoverLetterForm } from "@/components/cover-letter/CoverLetterForm";
 import { CoverLetterPreview } from "@/components/cover-letter/CoverLetterPreview";
 import { DraftManager } from "@/components/DraftManager";
 import { LinkedInPrefillPanel } from "@/components/LinkedInPrefillPanel";
+import { useSiteLocale } from "@/components/LocaleProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
@@ -50,6 +51,7 @@ import type {
 } from "@/types/cover-letter";
 
 export default function CoverLetterBuilderPage() {
+  const { t: ts } = useSiteLocale();
   const {
     hydrated,
     state,
@@ -184,9 +186,7 @@ export default function CoverLetterBuilderPage() {
 
   if (!hydrated) {
     return (
-      <div className="shell-loading">
-        Memuat...
-      </div>
+      <div className="shell-loading">{ts("common_loading")}</div>
     );
   }
 
@@ -249,7 +249,7 @@ export default function CoverLetterBuilderPage() {
               className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-emerald-700 disabled:opacity-60 sm:text-sm"
             >
               <Download className="h-4 w-4" />
-              {isExporting ? "Menyimpan..." : ct(settings.language, "exportPdf")}
+              {isExporting ? ts("builder_export_saving") : ct(settings.language, "exportPdf")}
             </button>
           </>
         }
@@ -291,7 +291,7 @@ export default function CoverLetterBuilderPage() {
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="shell-title text-sm">Preview</h2>
+            <h2 className="shell-title text-sm">{ts("common_preview")}</h2>
             <span className="shell-muted text-xs">
               {paper.label} · {settings.template} · {paper.widthMm}×
               {Math.round(pageLayout?.heightMm ?? paper.heightMm)} mm
@@ -309,7 +309,7 @@ export default function CoverLetterBuilderPage() {
             onPageLayoutChange={setPageLayout}
           />
           <p className="shell-muted mt-3 text-center text-xs">
-            100% gratis · Bagikan link read-only · Data di browser
+            {ts("builder_preview_footer_share")}
           </p>
         </div>
       </div>
