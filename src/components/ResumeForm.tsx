@@ -37,9 +37,9 @@ function SectionCard({
   action?: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <section className="shell-card">
       <div className="mb-4 flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+        <h3 className="shell-title text-sm">{title}</h3>
         {action}
       </div>
       {children}
@@ -59,7 +59,7 @@ function IconButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="rounded-md p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+      className="shell-muted rounded-md p-1.5 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/50"
     >
       <Trash2 className="h-4 w-4" />
     </button>
@@ -189,7 +189,7 @@ export function ResumeForm({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-1 text-[11px] shell-muted">
               {TEMPLATE_OPTIONS.find((o) => o.id === settings.template)?.hint}
             </p>
           </Field>
@@ -210,7 +210,7 @@ export function ResumeForm({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-1 text-[11px] shell-muted">
               {t(lang, "paperAutoFit")}
             </p>
           </Field>
@@ -232,7 +232,7 @@ export function ResumeForm({
           <Field label={t(lang, "accentColor")}>
             <input
               type="color"
-              className="h-10 w-full cursor-pointer rounded-lg border border-slate-200 bg-white p-1"
+              className="shell-input h-10 w-full cursor-pointer p-1"
               value={settings.accentColor}
               onChange={(e) =>
                 onSettingsChange({
@@ -346,13 +346,13 @@ export function ResumeForm({
         }
       >
         {data.experiences.length === 0 ? (
-          <p className="text-sm text-slate-500">Belum ada pengalaman ditambahkan.</p>
+          <p className="text-sm shell-muted">Belum ada pengalaman ditambahkan.</p>
         ) : (
           <div className="space-y-4">
             {data.experiences.map((exp) => (
               <div
                 key={exp.id}
-                className="rounded-lg border border-slate-100 bg-slate-50/50 p-3"
+                className="shell-subcard"
               >
                 <div className="mb-3 flex justify-end">
                   <IconButton
@@ -420,7 +420,7 @@ export function ResumeForm({
                       />
                     </Field>
                   </div>
-                  <label className="flex items-center gap-2 text-xs text-slate-600 sm:col-span-2">
+                  <label className="flex items-center gap-2 shell-body text-xs sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={exp.current}
@@ -506,13 +506,13 @@ export function ResumeForm({
         }
       >
         {data.education.length === 0 ? (
-          <p className="text-sm text-slate-500">Belum ada pendidikan ditambahkan.</p>
+          <p className="text-sm shell-muted">Belum ada pendidikan ditambahkan.</p>
         ) : (
           <div className="space-y-4">
             {data.education.map((edu) => (
               <div
                 key={edu.id}
-                className="rounded-lg border border-slate-100 bg-slate-50/50 p-3"
+                className="shell-subcard"
               >
                 <div className="mb-3 flex justify-end">
                   <IconButton
@@ -691,13 +691,13 @@ export function ResumeForm({
         }
       >
         {data.projects.length === 0 ? (
-          <p className="text-sm text-slate-500">Belum ada proyek ditambahkan.</p>
+          <p className="text-sm shell-muted">Belum ada proyek ditambahkan.</p>
         ) : (
           <div className="space-y-4">
             {data.projects.map((project) => (
               <div
                 key={project.id}
-                className="rounded-lg border border-slate-100 bg-slate-50/50 p-3"
+                className="shell-subcard"
               >
                 <div className="mb-3 flex justify-end">
                   <IconButton
@@ -842,7 +842,7 @@ export function ResumeForm({
         }
       >
         {data.certifications.length === 0 ? (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm shell-muted">
             Belum ada sertifikasi ditambahkan.
           </p>
         ) : (
@@ -850,7 +850,7 @@ export function ResumeForm({
             {data.certifications.map((cert) => (
               <div
                 key={cert.id}
-                className="rounded-lg border border-slate-100 bg-slate-50/50 p-3"
+                className="shell-subcard"
               >
                 <div className="mb-3 flex justify-end">
                   <IconButton
@@ -950,11 +950,11 @@ export function ResumeForm({
         }
       >
         {data.volunteers.length === 0 ? (
-          <p className="text-sm text-slate-500">Belum ada volunteer ditambahkan.</p>
+          <p className="text-sm shell-muted">Belum ada volunteer ditambahkan.</p>
         ) : (
           <div className="space-y-4">
             {data.volunteers.map((vol) => (
-              <div key={vol.id} className="rounded-lg border border-slate-100 bg-slate-50/50 p-3">
+              <div key={vol.id} className="shell-subcard">
                 <div className="mb-3 flex justify-end">
                   <IconButton
                     label="Hapus volunteer"
@@ -984,7 +984,7 @@ export function ResumeForm({
                       <input className={inputClass} value={vol.endDate} disabled={vol.current} onChange={(e) => updateVolunteer(vol.id, { endDate: e.target.value })} />
                     </Field>
                   </div>
-                  <label className="flex items-center gap-2 text-xs text-slate-600 sm:col-span-2">
+                  <label className="flex items-center gap-2 shell-body text-xs sm:col-span-2">
                     <input type="checkbox" checked={vol.current} onChange={(e) => updateVolunteer(vol.id, { current: e.target.checked, endDate: e.target.checked ? "" : vol.endDate })} />
                     {t(lang, "current")}
                   </label>
@@ -1020,11 +1020,11 @@ export function ResumeForm({
         }
       >
         {data.awards.length === 0 ? (
-          <p className="text-sm text-slate-500">Belum ada penghargaan ditambahkan.</p>
+          <p className="text-sm shell-muted">Belum ada penghargaan ditambahkan.</p>
         ) : (
           <div className="space-y-4">
             {data.awards.map((award) => (
-              <div key={award.id} className="rounded-lg border border-slate-100 bg-slate-50/50 p-3">
+              <div key={award.id} className="shell-subcard">
                 <div className="mb-3 flex justify-end">
                   <IconButton
                     label="Hapus penghargaan"
@@ -1078,11 +1078,11 @@ export function ResumeForm({
         }
       >
         {data.publications.length === 0 ? (
-          <p className="text-sm text-slate-500">Belum ada publikasi ditambahkan.</p>
+          <p className="text-sm shell-muted">Belum ada publikasi ditambahkan.</p>
         ) : (
           <div className="space-y-4">
             {data.publications.map((pub) => (
-              <div key={pub.id} className="rounded-lg border border-slate-100 bg-slate-50/50 p-3">
+              <div key={pub.id} className="shell-subcard">
                 <div className="mb-3 flex justify-end">
                   <IconButton
                     label="Hapus publikasi"

@@ -79,13 +79,13 @@ export function DraftManager({
     });
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <section className="shell-card">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-slate-900">{labels.title}</h3>
+        <h3 className="shell-title text-sm">{labels.title}</h3>
         <button
           type="button"
           onClick={onCreate}
-          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+          className="shell-btn-secondary gap-1 px-2.5 py-1.5 text-xs"
         >
           <FilePlus2 className="h-3.5 w-3.5" />
           {labels.new}
@@ -101,15 +101,13 @@ export function DraftManager({
             <div
               key={draft.id}
               className={`rounded-lg border px-3 py-2 ${
-                isActive
-                  ? "border-blue-300 bg-blue-50/60"
-                  : "border-slate-100 bg-slate-50/50"
+                isActive ? "shell-draft-active" : "shell-draft-inactive"
               }`}
             >
               {isEditing ? (
                 <div className="flex items-center gap-2">
                   <input
-                    className="flex-1 rounded-md border border-slate-200 px-2 py-1 text-sm"
+                    className="shell-input flex-1 rounded-md px-2 py-1 text-sm"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     onKeyDown={(e) => {
@@ -128,7 +126,7 @@ export function DraftManager({
                   <button
                     type="button"
                     onClick={() => setEditingId(null)}
-                    className="text-xs text-slate-500"
+                    className="shell-muted text-xs"
                   >
                     {labels.cancel}
                   </button>
@@ -140,10 +138,10 @@ export function DraftManager({
                     onClick={() => onSelect(draft.id)}
                     className="min-w-0 flex-1 text-left"
                   >
-                    <p className="truncate text-sm font-medium text-slate-900">
+                    <p className="shell-title truncate text-sm">
                       {draft.name}
                     </p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="shell-muted text-[11px]">
                       {labels.updated} {formatDate(draft.updatedAt)}
                     </p>
                   </button>
@@ -152,7 +150,7 @@ export function DraftManager({
                       type="button"
                       onClick={() => startRename(draft)}
                       aria-label={labels.rename}
-                      className="rounded p-1 text-slate-400 hover:bg-white hover:text-slate-700"
+                      className="shell-muted rounded p-1 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-heading)]"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
@@ -160,7 +158,7 @@ export function DraftManager({
                       type="button"
                       onClick={() => onDuplicate(draft.id)}
                       aria-label={labels.duplicate}
-                      className="rounded p-1 text-slate-400 hover:bg-white hover:text-slate-700"
+                      className="shell-muted rounded p-1 hover:bg-[var(--shell-hover)] hover:text-[var(--shell-heading)]"
                     >
                       <Copy className="h-3.5 w-3.5" />
                     </button>
@@ -172,7 +170,7 @@ export function DraftManager({
                       }}
                       disabled={drafts.length <= 1}
                       aria-label={labels.delete}
-                      className="rounded p-1 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30"
+                      className="shell-muted rounded p-1 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 dark:hover:bg-red-950/50"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>

@@ -29,7 +29,7 @@ export const defaultResumeData: ResumeData = {
 };
 
 export const defaultSettings: ResumeSettings = {
-  template: "modern",
+  template: "minimal",
   language: "id",
   accentColor: "#2563eb",
   paperSize: "a4",

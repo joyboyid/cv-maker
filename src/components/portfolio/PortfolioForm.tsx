@@ -29,9 +29,9 @@ function SectionCard({
   action?: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <section className="shell-card">
       <div className="mb-4 flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+        <h3 className="shell-title text-sm">{title}</h3>
         {action}
       </div>
       {children}
@@ -45,7 +45,7 @@ function IconButton({ onClick, label }: { onClick: () => void; label: string }) 
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="rounded-md p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+      className="shell-muted rounded-md p-1.5 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/50"
     >
       <Trash2 className="h-4 w-4" />
     </button>
@@ -147,7 +147,7 @@ export function PortfolioForm({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-1 text-[11px] shell-muted">
               {
                 PORTFOLIO_TEMPLATE_OPTIONS.find((o) => o.id === settings.template)
                   ?.hint
@@ -180,7 +180,7 @@ export function PortfolioForm({
                     accentColor: e.target.value,
                   })
                 }
-                className="h-10 w-14 cursor-pointer rounded-lg border border-slate-200 bg-white"
+                className="shell-input h-10 w-14 cursor-pointer p-0"
               />
               <input
                 className={inputClass}
@@ -287,7 +287,7 @@ export function PortfolioForm({
           <button
             type="button"
             onClick={addSkill}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+            className="shell-btn-secondary gap-1 px-2.5 py-1.5 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             {pt(lang, "addSkill")}
@@ -296,7 +296,7 @@ export function PortfolioForm({
       >
         <div className="space-y-2">
           {data.skills.length === 0 ? (
-            <p className="text-sm text-slate-500">Belum ada keahlian.</p>
+            <p className="text-sm shell-muted">Belum ada keahlian.</p>
           ) : null}
           {data.skills.map((skill, index) => (
             <div key={index} className="flex items-center gap-2">
@@ -320,7 +320,7 @@ export function PortfolioForm({
           <button
             type="button"
             onClick={addProject}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+            className="shell-btn-secondary gap-1 px-2.5 py-1.5 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             {pt(lang, "addProject")}
@@ -329,15 +329,15 @@ export function PortfolioForm({
       >
         <div className="space-y-4">
           {data.projects.length === 0 ? (
-            <p className="text-sm text-slate-500">Belum ada proyek.</p>
+            <p className="text-sm shell-muted">Belum ada proyek.</p>
           ) : null}
           {data.projects.map((project) => (
             <div
               key={project.id}
-              className="rounded-lg border border-slate-100 bg-slate-50/60 p-4"
+              className="shell-subcard p-4"
             >
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-medium text-slate-500">
+                <span className="text-xs font-medium shell-muted">
                   {project.name || "Proyek baru"}
                 </span>
                 <IconButton
@@ -410,7 +410,7 @@ export function PortfolioForm({
                     placeholder="React, TypeScript, Node.js"
                   />
                 </Field>
-                <label className="flex items-center gap-2 text-sm text-slate-700 sm:col-span-2">
+                <label className="shell-body flex items-center gap-2 text-sm sm:col-span-2">
                   <input
                     type="checkbox"
                     checked={project.featured}

@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState } from "react";
 import {
-  ArrowLeft,
   Check,
   Download,
   Import,
@@ -16,6 +14,7 @@ import { DraftManager } from "@/components/DraftManager";
 import { PortfolioForm } from "@/components/portfolio/PortfolioForm";
 import { PortfolioPreview } from "@/components/portfolio/PortfolioPreview";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import {
   defaultPortfolioState,
   importPortfolioFromResume,
@@ -167,36 +166,30 @@ export default function PortfolioBuilderPage() {
 
   if (!hydrated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-500">
+      <div className="shell-loading">
         Memuat...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-slate-600 transition hover:text-slate-900"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Beranda
-            </Link>
-            <div className="hidden h-4 w-px bg-slate-200 sm:block" />
-            <div className="flex items-center gap-2">
-              <LayoutTemplate className="h-5 w-5 text-violet-600" />
-              <span className="font-semibold text-slate-900">Portofolio</span>
-            </div>
+    <div className="shell-page">
+      <SiteHeader
+        layout="builder"
+        sticky
+        activeToolId="portfolio"
+        brand={
+          <div className="flex items-center gap-2">
+            <LayoutTemplate className="h-5 w-5 text-violet-600" />
+            <span className="shell-title">Portofolio</span>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+        }
+        actions={
+          <>
             <button
               type="button"
               onClick={handleLoadSample}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               <Sparkles className="h-4 w-4" />
               {pt(settings.language, "loadSample")}
@@ -204,7 +197,7 @@ export default function PortfolioBuilderPage() {
             <button
               type="button"
               onClick={handleImportFromCv}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               <Import className="h-4 w-4" />
               {pt(settings.language, "importFromCv")}
@@ -212,7 +205,7 @@ export default function PortfolioBuilderPage() {
             <button
               type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               {shareCopied ? (
                 <Check className="h-4 w-4 text-emerald-600" />
@@ -226,7 +219,7 @@ export default function PortfolioBuilderPage() {
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               <RotateCcw className="h-4 w-4" />
               {pt(settings.language, "reset")}
@@ -240,9 +233,9 @@ export default function PortfolioBuilderPage() {
               <Download className="h-4 w-4" />
               {isExporting ? "Menyimpan..." : pt(settings.language, "exportPdf")}
             </button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <div className="mx-auto grid max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-2 lg:px-6">
         <div className="space-y-4">
@@ -257,7 +250,7 @@ export default function PortfolioBuilderPage() {
             onDuplicate={duplicateDraftById}
           />
           {importNotice ? (
-            <div className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-800">
+            <div className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-800 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-300">
               {importNotice}
             </div>
           ) : null}
@@ -271,18 +264,18 @@ export default function PortfolioBuilderPage() {
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-700">Preview</h2>
-            <span className="text-xs text-slate-500">
+            <h2 className="shell-title text-sm">Preview</h2>
+            <span className="shell-muted text-xs">
               Template {settings.template} · Web layout
             </span>
           </div>
           {exportError ? (
-            <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+            <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
               {exportError}
             </div>
           ) : null}
           <PortfolioPreview ref={previewRef} data={data} settings={settings} />
-          <p className="mt-3 text-center text-xs text-slate-400">
+          <p className="shell-muted mt-3 text-center text-xs">
             100% gratis · Bagikan link read-only · Data di browser
           </p>
         </div>

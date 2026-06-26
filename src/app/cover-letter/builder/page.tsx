@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft,
   Check,
   Download,
   FileSignature,
@@ -17,6 +15,7 @@ import { CoverLetterPreview } from "@/components/cover-letter/CoverLetterPreview
 import { DraftManager } from "@/components/DraftManager";
 import { LinkedInPrefillPanel } from "@/components/LinkedInPrefillPanel";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import {
   buildPdfCoverLetterFilename,
   defaultCoverLetterState,
@@ -185,38 +184,30 @@ export default function CoverLetterBuilderPage() {
 
   if (!hydrated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-500">
+      <div className="shell-loading">
         Memuat...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-slate-600 transition hover:text-slate-900"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Beranda
-            </Link>
-            <div className="hidden h-4 w-px bg-slate-200 sm:block" />
-            <div className="flex items-center gap-2">
-              <FileSignature className="h-5 w-5 text-emerald-600" />
-              <span className="font-semibold text-slate-900">
-                {ct(settings.language, "builder")}
-              </span>
-            </div>
+    <div className="shell-page">
+      <SiteHeader
+        layout="builder"
+        sticky
+        activeToolId="cover-letter"
+        brand={
+          <div className="flex items-center gap-2">
+            <FileSignature className="h-5 w-5 text-emerald-600" />
+            <span className="shell-title">{ct(settings.language, "builder")}</span>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+        }
+        actions={
+          <>
             <button
               type="button"
               onClick={handleLoadSample}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               <Sparkles className="h-4 w-4" />
               {ct(settings.language, "loadSample")}
@@ -224,7 +215,7 @@ export default function CoverLetterBuilderPage() {
             <button
               type="button"
               onClick={handleGenerateFromCv}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               <Wand2 className="h-4 w-4" />
               {ct(settings.language, "importFromCv")}
@@ -232,7 +223,7 @@ export default function CoverLetterBuilderPage() {
             <button
               type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               {shareCopied ? (
                 <Check className="h-4 w-4 text-emerald-600" />
@@ -246,7 +237,7 @@ export default function CoverLetterBuilderPage() {
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+              className="shell-btn-secondary"
             >
               <RotateCcw className="h-4 w-4" />
               {ct(settings.language, "reset")}
@@ -260,9 +251,9 @@ export default function CoverLetterBuilderPage() {
               <Download className="h-4 w-4" />
               {isExporting ? "Menyimpan..." : ct(settings.language, "exportPdf")}
             </button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <div className="mx-auto grid max-w-[1600px] gap-6 px-4 py-6 lg:grid-cols-2 lg:px-6">
         <div className="space-y-4">
@@ -277,7 +268,7 @@ export default function CoverLetterBuilderPage() {
             onDuplicate={duplicateDraftById}
           />
           {notice ? (
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
               {notice}
             </div>
           ) : null}
@@ -300,14 +291,14 @@ export default function CoverLetterBuilderPage() {
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-700">Preview</h2>
-            <span className="text-xs text-slate-500">
+            <h2 className="shell-title text-sm">Preview</h2>
+            <span className="shell-muted text-xs">
               {paper.label} · {settings.template} · {paper.widthMm}×
               {Math.round(pageLayout?.heightMm ?? paper.heightMm)} mm
             </span>
           </div>
           {exportError ? (
-            <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+            <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
               {exportError}
             </div>
           ) : null}
@@ -317,7 +308,7 @@ export default function CoverLetterBuilderPage() {
             settings={settings}
             onPageLayoutChange={setPageLayout}
           />
-          <p className="mt-3 text-center text-xs text-slate-400">
+          <p className="shell-muted mt-3 text-center text-xs">
             100% gratis · Bagikan link read-only · Data di browser
           </p>
         </div>

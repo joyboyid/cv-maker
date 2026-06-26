@@ -23,7 +23,7 @@ export function WalletCard({ method }: WalletCardProps) {
   };
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="shell-card-lg p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div
@@ -32,8 +32,8 @@ export function WalletCard({ method }: WalletCardProps) {
             {method.symbol}
           </div>
           <div>
-            <h2 className="font-semibold text-slate-900">{method.name}</h2>
-            <p className="text-xs text-slate-500">{method.network}</p>
+            <h2 className="shell-title">{method.name}</h2>
+            <p className="shell-muted text-xs">{method.network}</p>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -51,7 +51,7 @@ export function WalletCard({ method }: WalletCardProps) {
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+            className="shell-btn-secondary px-3 py-1.5 text-xs"
           >
             {copied ? (
               <>
@@ -71,9 +71,9 @@ export function WalletCard({ method }: WalletCardProps) {
       <button
         type="button"
         onClick={handleCopy}
-        className="mt-4 w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-left transition hover:bg-slate-100"
+        className="mt-4 w-full rounded-xl border border-[var(--shell-border-subtle)] bg-[var(--shell-surface-subtle)] px-4 py-3 text-left transition hover:bg-[var(--shell-hover)]"
       >
-        <p className="break-all font-mono text-xs leading-relaxed text-slate-700 sm:text-sm">
+        <p className="shell-body break-all font-mono text-xs leading-relaxed sm:text-sm">
           {method.address}
         </p>
       </button>

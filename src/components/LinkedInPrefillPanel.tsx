@@ -86,7 +86,7 @@ export function LinkedInPrefillPanel({
   };
 
   return (
-    <section className="rounded-xl border border-sky-200 bg-sky-50/50 p-4 shadow-sm">
+    <section className="rounded-xl border border-sky-200 bg-sky-50/50 p-4 shadow-sm dark:border-sky-800 dark:bg-sky-950/30">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -97,11 +97,11 @@ export function LinkedInPrefillPanel({
             <LinkedInIcon className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">{labels.title}</h3>
-            <p className="text-[11px] text-slate-500">{labels.hint}</p>
+            <h3 className="shell-title text-sm">{labels.title}</h3>
+            <p className="shell-muted text-[11px]">{labels.hint}</p>
           </div>
         </div>
-        <span className="text-xs font-medium text-sky-700">
+        <span className="text-xs font-medium text-sky-700 dark:text-sky-400">
           {open ? "Tutup" : "Buka"}
         </span>
       </button>
@@ -116,7 +116,7 @@ export function LinkedInPrefillPanel({
             placeholder={labels.placeholder}
           />
 
-          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
+          <div className="shell-body flex flex-wrap items-center gap-3 text-xs">
             <label className="inline-flex items-center gap-1.5">
               <input
                 type="radio"
@@ -148,14 +148,14 @@ export function LinkedInPrefillPanel({
           </button>
 
           {notice ? (
-            <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+            <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
               <Check className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               {notice}
             </div>
           ) : null}
 
           {warnings.length > 0 ? (
-            <ul className="list-inside list-disc space-y-1 text-xs text-amber-800">
+            <ul className="list-inside list-disc space-y-1 text-xs text-amber-800 dark:text-amber-300">
               {warnings.map((warning) => (
                 <li key={warning}>{warning}</li>
               ))}

@@ -100,7 +100,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
       >
         <div
           ref={containerRef}
-          className="relative w-full overflow-hidden rounded-sm bg-white shadow-xl shadow-slate-200/80"
+          className="shell-preview-frame relative w-full overflow-hidden rounded-sm bg-white"
           style={{ height: scaledWrapperHeight }}
         >
           <div

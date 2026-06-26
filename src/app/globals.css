@@ -1,8 +1,43 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  --shell-surface: #ffffff;
+  --shell-surface-subtle: #f8fafc;
+  --shell-border: #e2e8f0;
+  --shell-border-subtle: #f1f5f9;
+  --shell-muted: #64748b;
+  --shell-heading: #0f172a;
+  --shell-body: #334155;
+  --shell-hover: #f8fafc;
+  --shell-input-bg: #ffffff;
+  --shell-input-border: #e2e8f0;
+  --shell-header-bg: rgb(255 255 255 / 0.9);
+  --shell-gradient-from: #f8fafc;
+  --shell-gradient-via: #ffffff;
+  --shell-gradient-to: rgb(239 246 255 / 0.3);
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --shell-surface: #1e293b;
+  --shell-surface-subtle: #1e293b;
+  --shell-border: #334155;
+  --shell-border-subtle: #1e293b;
+  --shell-muted: #94a3b8;
+  --shell-heading: #f1f5f9;
+  --shell-body: #cbd5e1;
+  --shell-hover: #334155;
+  --shell-input-bg: #0f172a;
+  --shell-input-border: #475569;
+  --shell-header-bg: rgb(15 23 42 / 0.9);
+  --shell-gradient-from: #0f172a;
+  --shell-gradient-via: #1e293b;
+  --shell-gradient-to: rgb(30 58 138 / 0.15);
 }
 
 @theme inline {
@@ -16,8 +51,205 @@ body {
   color: var(--foreground);
 }
 
+@layer components {
+  .shell-page {
+    min-height: 100vh;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  .shell-page-gradient {
+    min-height: 100vh;
+    background: linear-gradient(
+      to bottom,
+      var(--shell-gradient-from),
+      var(--shell-gradient-via),
+      var(--shell-gradient-to)
+    );
+  }
+
+  .shell-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--shell-border);
+    background-color: var(--shell-header-bg);
+    backdrop-filter: blur(8px);
+  }
+
+  .shell-header-static {
+    border-bottom: 1px solid var(--shell-border);
+    background-color: var(--shell-surface);
+  }
+
+  .shell-card {
+    border-radius: 0.75rem;
+    border: 1px solid var(--shell-border);
+    background-color: var(--shell-surface);
+    padding: 1rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  .shell-card-lg {
+    border-radius: 1.5rem;
+    border: 1px solid var(--shell-border);
+    background-color: var(--shell-surface);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  .shell-footer {
+    border-top: 1px solid var(--shell-border);
+    background-color: var(--shell-surface);
+  }
+
+  .shell-title {
+    font-weight: 600;
+    color: var(--shell-heading);
+  }
+
+  .shell-heading {
+    font-weight: 700;
+    color: var(--shell-heading);
+  }
+
+  .shell-muted {
+    color: var(--shell-muted);
+  }
+
+  .shell-body {
+    color: var(--shell-body);
+  }
+
+  .shell-link {
+    font-size: 0.875rem;
+    color: var(--shell-muted);
+    transition: color 0.15s;
+  }
+
+  .shell-link:hover {
+    color: var(--shell-heading);
+  }
+
+  .shell-divider {
+    height: 1rem;
+    width: 1px;
+    background-color: var(--shell-border);
+  }
+
+  .shell-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--shell-border);
+    background-color: var(--shell-surface);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--shell-body);
+    transition: background-color 0.15s;
+  }
+
+  .shell-btn-secondary:hover {
+    background-color: var(--shell-hover);
+  }
+
+  @media (min-width: 640px) {
+    .shell-btn-secondary {
+      font-size: 0.875rem;
+    }
+  }
+
+  .shell-loading {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background);
+    color: var(--shell-muted);
+  }
+
+  .shell-input {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--shell-input-border);
+    background-color: var(--shell-input-bg);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--shell-heading);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .shell-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgb(59 130 246 / 0.2);
+  }
+
+  .shell-textarea {
+    width: 100%;
+    resize: vertical;
+    border-radius: 0.5rem;
+    border: 1px solid var(--shell-input-border);
+    background-color: var(--shell-input-bg);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--shell-heading);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .shell-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgb(59 130 246 / 0.2);
+  }
+
+  .shell-draft-active {
+    border-color: #93c5fd;
+    background-color: rgb(239 246 255 / 0.6);
+  }
+
+  .dark .shell-draft-active {
+    border-color: #3b82f6;
+    background-color: rgb(30 58 138 / 0.2);
+  }
+
+  .shell-draft-inactive {
+    border-color: var(--shell-border-subtle);
+    background-color: rgb(248 250 252 / 0.5);
+  }
+
+  .dark .shell-draft-inactive {
+    background-color: rgb(15 23 42 / 0.5);
+  }
+
+  .shell-subcard {
+    border-radius: 0.5rem;
+    border: 1px solid var(--shell-border-subtle);
+    background-color: rgb(248 250 252 / 0.5);
+    padding: 0.75rem;
+  }
+
+  .dark .shell-subcard {
+    background-color: rgb(15 23 42 / 0.5);
+  }
+
+  .shell-preview-frame {
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid var(--shell-border);
+    background-color: #ffffff;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  }
+
+  .dark .shell-preview-frame {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4);
+  }
+}
+
 @media print {
   body {
     background: white;
+    color: #0f172a;
   }
 }

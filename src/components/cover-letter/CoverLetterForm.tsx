@@ -22,8 +22,8 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h3 className="mb-4 text-sm font-semibold text-slate-900">{title}</h3>
+    <section className="shell-card">
+      <h3 className="shell-title mb-4 text-sm">{title}</h3>
       {children}
     </section>
   );
@@ -88,7 +88,7 @@ export function CoverLetterForm({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="shell-muted mt-1 text-[11px]">
               {
                 COVER_LETTER_TEMPLATE_OPTIONS.find(
                   (option) => option.id === settings.template,

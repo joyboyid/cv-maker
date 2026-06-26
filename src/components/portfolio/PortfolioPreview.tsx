@@ -17,7 +17,7 @@ export const PortfolioPreview = forwardRef<HTMLDivElement, PortfolioPreviewProps
 
     return (
       <div className="mx-auto w-full max-w-3xl">
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-200/80">
+        <div className="shell-preview-frame">
           <div className="max-h-[80vh] overflow-y-auto">
             <div ref={ref} id="portfolio-preview">
               <PortfolioRenderer data={cleanData} settings={settings} />

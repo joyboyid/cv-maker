@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FileText, PenLine } from "lucide-react";
 import { ResumePreview } from "@/components/ResumePreview";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { decodeShareState } from "@/lib/share-resume";
 import { defaultResumeState } from "@/lib/resume-defaults";
 import type { ResumeState } from "@/types/resume";
@@ -33,12 +34,12 @@ export default function SharedCvPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-6 text-center">
-        <FileText className="h-10 w-10 text-slate-400" />
-        <h1 className="mt-4 text-xl font-semibold text-slate-900">
+      <div className="shell-loading flex-col px-6 text-center">
+        <FileText className="shell-muted h-10 w-10" />
+        <h1 className="shell-title mt-4 text-xl">
           CV tidak ditemukan
         </h1>
-        <p className="mt-2 max-w-md text-sm text-slate-600">
+        <p className="shell-body mt-2 max-w-md text-sm">
           Link tidak valid atau sudah rusak. Minta pengirim untuk membagikan
           link baru dari builder.
         </p>
@@ -54,7 +55,7 @@ export default function SharedCvPage() {
 
   if (!state) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-500">
+      <div className="shell-loading">
         Memuat CV...
       </div>
     );
@@ -63,24 +64,19 @@ export default function SharedCvPage() {
   const name = state.data.personal.fullName || "CV";
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-              CV Bersama
-            </p>
-            <h1 className="text-lg font-semibold text-slate-900">{name}</h1>
-          </div>
-          <Link
-            href="/builder"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-          >
+    <div className="shell-page">
+      <SiteHeader
+        layout="share"
+        maxWidth="4xl"
+        activeToolId="cv"
+        shareMeta={{ label: "CV Bersama", title: name }}
+        rightAction={
+          <Link href="/builder" className="shell-btn-secondary text-sm">
             <PenLine className="h-4 w-4" />
             Buat CV sendiri
           </Link>
-        </div>
-      </header>
+        }
+      />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
         <ResumePreview data={state.data} settings={state.settings} />

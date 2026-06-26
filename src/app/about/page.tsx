@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowLeft,
   Clapperboard,
   FileText,
   Shield,
@@ -9,6 +8,7 @@ import {
   Tv,
 } from "lucide-react";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { createPageMetadata } from "@/lib/seo";
 
 const interests = [
@@ -41,25 +41,11 @@ export const metadata = createPageMetadata({
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
-      <header className="mx-auto flex max-w-4xl items-center justify-between px-6 py-6">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-600 transition hover:text-slate-900"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Beranda
-        </Link>
-        <Link
-          href="/builder"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-        >
-          Buat CV
-        </Link>
-      </header>
+    <div className="shell-page-gradient">
+      <SiteHeader layout="compact" />
 
       <main className="mx-auto max-w-4xl px-6 pb-20">
-        <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <section className="shell-card-lg overflow-hidden">
           <div className="bg-gradient-to-br from-blue-600 to-slate-800 px-8 py-10 text-white sm:px-12">
             <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
               <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 border-white/30 shadow-xl">
@@ -87,9 +73,9 @@ export default function AboutPage() {
               <span className="text-sm font-medium">Halo, kenalan yuk!</span>
             </div>
 
-            <div className="space-y-4 text-base leading-relaxed text-slate-700">
+            <div className="shell-body space-y-4 text-base leading-relaxed">
               <p>
-                Aku adalah <strong className="text-slate-900">Boim</strong>, orang
+                Aku adalah <strong className="text-[var(--shell-heading)]">Boim</strong>, orang
                 yang sangat suka bidang IT dan sangat menyukai tentang keamanan.
                 Dunia teknologi dan cybersecurity selalu menarik buatku — dari
                 troubleshooting sehari-hari sampai eksplorasi hal-hal di balik
@@ -110,7 +96,7 @@ export default function AboutPage() {
               </p>
               <p>
                 Btw, aku sekarang kerja sebagai{" "}
-                <strong className="text-slate-900">IT Support</strong> di salah
+                <strong className="text-[var(--shell-heading)]">IT Support</strong> di salah
                 satu ISP di Indonesia, hihihi. Terima kasih sudah mampir dan
                 pakai tool ini!
               </p>
@@ -122,25 +108,25 @@ export default function AboutPage() {
           {interests.map((item) => (
             <article
               key={item.title}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="shell-card-lg p-5"
             >
               <item.icon className="h-6 w-6 text-blue-600" />
-              <h2 className="mt-3 font-semibold text-slate-900">{item.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              <h2 className="shell-title mt-3">{item.title}</h2>
+              <p className="shell-muted mt-2 text-sm leading-relaxed">
                 {item.description}
               </p>
             </article>
           ))}
         </section>
 
-        <section className="mt-10 rounded-3xl border border-blue-100 bg-blue-50/50 p-8 text-center sm:p-10">
+        <section className="mt-10 rounded-3xl border border-blue-100 bg-blue-50/50 p-8 text-center dark:border-blue-900 dark:bg-blue-950/30 sm:p-10">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white">
             <FileText className="h-6 w-6" />
           </div>
-          <h2 className="mt-4 text-xl font-bold text-slate-900">
+          <h2 className="shell-heading mt-4 text-xl">
             CV Satu Halaman
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-slate-600">
+          <p className="shell-muted mx-auto mt-3 max-w-lg text-sm leading-relaxed">
             Tool ini kubuat supaya siapa pun bisa bikin CV profesional satu
             halaman dengan mudah — gratis, tanpa daftar, dan data tetap di
             browser kamu.

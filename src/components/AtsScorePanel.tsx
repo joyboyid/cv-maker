@@ -17,9 +17,13 @@ function StatusIcon({ status }: { status: AtsCheck["status"] }) {
 }
 
 function gradeColor(grade: AtsScoreResult["grade"]): string {
-  if (grade === "A" || grade === "B") return "text-emerald-700 bg-emerald-50 border-emerald-200";
-  if (grade === "C") return "text-amber-700 bg-amber-50 border-amber-200";
-  return "text-red-700 bg-red-50 border-red-200";
+  if (grade === "A" || grade === "B") {
+    return "text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800";
+  }
+  if (grade === "C") {
+    return "text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-300 dark:bg-amber-950/40 dark:border-amber-800";
+  }
+  return "text-red-700 bg-red-50 border-red-200 dark:text-red-300 dark:bg-red-950/40 dark:border-red-800";
 }
 
 export function AtsScorePanel({ result, lang }: AtsScorePanelProps) {
@@ -45,12 +49,12 @@ export function AtsScorePanel({ result, lang }: AtsScorePanelProps) {
         {result.checks.map((check) => (
           <li
             key={check.id}
-            className="flex items-start gap-2 rounded-lg bg-white/60 px-2.5 py-2 text-xs text-slate-700"
+            className="flex items-start gap-2 rounded-lg bg-white/60 px-2.5 py-2 text-xs text-slate-700 dark:bg-slate-900/40 dark:text-slate-200"
           >
             <StatusIcon status={check.status} />
             <div>
               <p className="font-medium">{check.label}</p>
-              <p className="mt-0.5 text-slate-500">{check.message}</p>
+              <p className="mt-0.5 text-slate-500 dark:text-slate-400">{check.message}</p>
             </div>
           </li>
         ))}
